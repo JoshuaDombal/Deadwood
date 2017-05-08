@@ -2,11 +2,11 @@
 
 public class SceneCard {
 
-    String name;
-    int numRoles;
-    int budget;
-    boolean playersOnCard;
-    Role[] roles;
+    private String name;
+    private int numRoles;
+    private int budget;
+    private boolean playersOnCard;
+    private Role[] roles;
 
 
     public SceneCard(String name, int numRoles, int budget, Role[] roles) {
@@ -18,10 +18,6 @@ public class SceneCard {
     }
 
 
-    public void addRole(Role role) {
-      roles[numRoles-1] = role;
-    }
-
     public boolean checkForPlayers() {
       if (numRoles > 0) {
         return true;
@@ -30,16 +26,46 @@ public class SceneCard {
     }
 
     public void bonusPayout() {
+        if (playersOnCard == false) {
+            return
+        }
 
     }
 
+
+    // Updaters
+
+    public void occupiedStatus(boolean status) {
+        this.playersOnCard = status;
+    }
+
+    public void addRole(Role role) {
+      roles[numRoles-1] = role;
+    }
+
+
+    // Getters
+    public String getCardName() {
+      return name;
+    }
+
+    public int getNumRoles() {
+      return name;
+    }
     public int getBudget() {
       return budget;
     }
 
-    public String getCardName() {
-      return name;
+    public boolean occupiedStatus() {
+      return playersOnCard;
     }
+
+    public Roles[] getBudget() {
+      return roles;
+    }
+
+
+
 
 
 
