@@ -1,14 +1,14 @@
 public class Role {
 
-    String name;
-    Player player;
+    private String name;
+    private Player player;
 
-    int roleRank;
-    int rehearseCounter;
-    int sceneBonus;
+    private int roleRank;
+    private int rehearseCounter;
+    //private int sceneBonus;
 
-    boolean onCard;
-    boolean occupied;
+    private boolean onCard;
+    private boolean occupied;
 
 
     public Role (String name, int roleRank) {
@@ -29,9 +29,6 @@ public class Role {
         this.player = player;
     }
 
-    public boolean checkForPlayer() {
-        return occupied;
-    }
 
     // This function should maybe not be in here
     public void resetRole() {
@@ -46,8 +43,23 @@ public class Role {
         return this.name;
     }
 
+    public Player getPlayer() {
+        return this.player;
+    }
+
     public int getRank(){
         return this.roleRank;
     }
+
+    public boolean checkOnCard() {
+        return onCard;
+    }
+
+
+    public boolean checkForPlayer() {
+        return occupied;
+    }
+
+
 
 }

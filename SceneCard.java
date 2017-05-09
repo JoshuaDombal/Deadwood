@@ -1,3 +1,6 @@
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
+
 public class SceneCard {
 
     private String name;
@@ -21,8 +24,33 @@ public class SceneCard {
     }
 
     public void bonusPayout() {
+
         if (playersOnCard == false) {
             return;
+        } else {
+            int[] dice = new int[budget];
+            int[] bonus = new int[numRoles];
+
+            // Roles the number of dice of budget
+            for (int i = 0; i < budget; i++) {
+                int r = ThreadLocalRandom.current().nextInt(1,7);
+                dice[i] = r;
+            }
+            Arrays.sort(dice);
+
+            // Adds the value of role of each dice to the bonus
+            for (int i = 0; i < budget; i++) {
+                bonus[i%numRoles] = dice[i];
+            }
+
+            // Gives players on scene card the appropriate bonus
+            for (int i = 0; i < numRoles; i++) {
+                if (roles[i].checkForPlayer()) {
+                    roles[i].getPlayer().updateCash(bonus[i]);
+                }
+            }
+
+
         }
 
     }
