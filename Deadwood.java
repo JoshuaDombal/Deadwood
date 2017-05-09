@@ -1,3 +1,4 @@
+
 import java.util.*;
 import java.io.*;
 import java.util.Scanner;
@@ -24,48 +25,7 @@ public class Deadwood {
     this.numPlayers = numPlayers;
     */
 
-    //may also need something to read in sets and roles
-    public static void readCards() {
-        File file = new File("cards");
 
-        try {
-            Scanner scanner = new Scanner(file);
-            sceneCards = new ArrayList<SceneCard>(2);
-
-            int cardNum = 0;
-            while (scanner.hasNextLine()) {
-                SceneCard card;
-                //name
-                String n = scanner.nextLine();
-                // roles
-                int r = scanner.nextInt();
-                scanner.nextLine();
-                //budget
-                int b = scanner.nextInt();
-                scanner.nextLine();
-                Role[] rol = new Role[r];
-
-                for (int i = 0; i < r; i++) {
-                    String rName = scanner.nextLine();
-                    int rRank = scanner.nextInt();
-                    scanner.nextLine();
-                    Role rRole = new Role(rName, rRank);
-                    rol[i] = rRole;
-                }
-                card = new SceneCard(n, r, b, rol);
-                sceneCards.add(cardNum, card);
-
-                cardNum++;
-
-
-            }
-            scanner.close();
-        }
-        catch (FileNotFoundException e) {
-            System.out.println("File not found");
-        }
-
-    }
 
 
     private static void playGame() {
@@ -186,7 +146,7 @@ public class Deadwood {
                     playInfoNotDone = false;
                 }
             }else{
-                Player player = new Player(givenName);
+                Player player = new Player(givenName, 0, 0, 1);
                 players.add(player);
                 numPlayers++;
                 if(numPlayers == 9){
@@ -348,6 +308,105 @@ public class Deadwood {
             }
             System.out.println("Name: " + roles[i].getName() + " Rank: " + roles[i].getRank() + " Status: " + status + "\n");
         }
+    }
+
+    // Reads rooms from a file
+    public static void readRooms() {
+      File file = new File("rooms");
+
+      try {
+        Scanner scanner = new Scanner(file);
+        sceneCards = new ArrayList<SceneCard>(2);
+
+        int roomNum = 0;
+        while (scanner.hasNextLine()) {
+          Room room;
+          //name
+          String n = scanner.nextLine();
+
+          if (n.equals("Trailer")) {
+            Trailer t = new Trailer(n);
+            rooms.add(roomNum, t);
+        } else if (n.equals("Casting Office")) {
+            CastingOffice c = new CastingOffice(n);
+            rooms.add(roomNum, c);
+          } else {
+          // roles
+          int r = scanner.nextInt();
+          scanner.nextLine();
+
+          // numShotCounter
+          int b = scanner.nextInt();
+          scanner.nextLine();
+
+          Role[] rol = new Role[r];
+
+          for (int i = 0; i < r; i++) {
+            String rName = scanner.nextLine();
+            int rRank = scanner.nextInt();
+            scanner.nextLine();
+            Role rRole = new Role(rName, rRank);
+            rol[i] = rRole;
+          }
+          Set set = new Set(n, r, b, rol);
+          rooms.add(roomNum, set);
+
+          }
+
+
+          roomNum++;
+
+
+        }
+        scanner.close();
+      }
+      catch (FileNotFoundException e) {
+        System.out.println("File not found");
+      }
+
+    }
+
+    // Reads cards from a file
+    public static void readCards() {
+        File file = new File("cards");
+
+        try {
+            Scanner scanner = new Scanner(file);
+            sceneCards = new ArrayList<SceneCard>(2);
+
+            int cardNum = 0;
+            while (scanner.hasNextLine()) {
+                SceneCard card;
+                //name
+                String n = scanner.nextLine();
+                // roles
+                int r = scanner.nextInt();
+                scanner.nextLine();
+                //budget
+                int b = scanner.nextInt();
+                scanner.nextLine();
+                Role[] rol = new Role[r];
+
+                for (int i = 0; i < r; i++) {
+                    String rName = scanner.nextLine();
+                    int rRank = scanner.nextInt();
+                    scanner.nextLine();
+                    Role rRole = new Role(rName, rRank);
+                    rol[i] = rRole;
+                }
+                card = new SceneCard(n, r, b, rol);
+                sceneCards.add(cardNum, card);
+
+                cardNum++;
+
+
+            }
+            scanner.close();
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        }
+
     }
 
     public static void main(String[] args) {
