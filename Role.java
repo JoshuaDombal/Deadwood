@@ -1,5 +1,3 @@
-
-
 public class Role {
 
     String name;
@@ -42,6 +40,14 @@ public class Role {
 
     public void incrementSceneBonus() {
       this.sceneBonus++;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public int getRank(){
+        return this.roleRank;
     }
 
 }

@@ -1,11 +1,9 @@
-
-
 public class SceneCard {
 
     private String name;
     private int numRoles;
     private int budget;
-    private boolean playersOnCard;
+    private boolean playersOnCard = false;
     private Role[] roles;
 
 
@@ -19,15 +17,12 @@ public class SceneCard {
 
 
     public boolean checkForPlayers() {
-      if (numRoles > 0) {
-        return true;
-      }
-      return false;
+        return this.playersOnCard;
     }
 
     public void bonusPayout() {
         if (playersOnCard == false) {
-            return
+            return;
         }
 
     }
@@ -45,12 +40,12 @@ public class SceneCard {
 
 
     // Getters
-    public String getCardName() {
+    public String getName() {
       return name;
     }
 
     public int getNumRoles() {
-      return name;
+      return numRoles;
     }
     public int getBudget() {
       return budget;
@@ -60,9 +55,11 @@ public class SceneCard {
       return playersOnCard;
     }
 
-    public Roles[] getBudget() {
+    public Role[] getRoles() {
       return roles;
     }
+
+
 
 
 

@@ -9,30 +9,37 @@ public class Player {
     private int rank;
 
     private Room room;
-    private Set set;
-    private CastingOffice castingOffice;
-
+    /*
+    Set set;
+    CastingOffice castingOffice;
+    */
     private Role role;
-.
-
-
-
 
     // Constructor
-    public Player (int nCash, int nCredits, int nRank){
-        this.cash = nCash;
-        this.credits = nCredits;
-        this.rank = nRank;
-        Room room = new Room("Trailer");
-        this.room = room;
+    public Player (String name){
+        this.name = name;
     }
 
     public void rehearse() {
+        
+    }
+
+    public void upgrade(){
 
     }
 
+    public void act(){
 
-    // Updaters
+    }
+
+    public void getLocation() {
+
+    }
+
+    public void changeRoom(Room newroom) {
+
+    }
+
     public void updateRoom(Room newRoom) {
         this.room = newRoom;
     }
@@ -57,32 +64,32 @@ public class Player {
 
     }
 
-    // Getters
-
-    public String getName() {
-        return this.name;
+    private static int rollDice(){
+        return 0;
     }
 
-    public int getCash() {
-        return this.cash;
-    }
-
-    public int getCredits() {
+    public int getCredits(){
         return this.credits;
     }
 
-    public int getRank() {
-        return this.rank;
+    public int getCash(){
+        return this.cash;
     }
 
-    public Room getRoom() {
+    public String getName(){
+        return this.name;
+    }
+
+    public Room getRoom(){
         return this.room;
     }
 
+    public int getRank(){
+        return this.rank;
+    }
 
-
-    private int rollDice(){
-        return 0;
+    public Role getRole(){
+        return this.role;
     }
 
 }

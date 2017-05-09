@@ -1,20 +1,17 @@
-import java.util.*;
+
 
 
 public class Set extends Room {
-
+    
     SceneCard scene;
     int shotTokens;
-    int numRoles;
-    boolean sceneFaceUp;
+    boolean sceneFaceUp = false;
 
     Role[] roles;
 
-    public Set(String name, int shotTokens, int numRoles, Role[] roles) {
+    public Set(String name, int shotTokens, int numRoles, Role[] roles){
         super(name);
         this.scene = scene;
-        this.shotTokens = shotTokens;
-        this.numRoles = numRoles;
         this.roles = roles;
     }
 
@@ -44,5 +41,9 @@ public class Set extends Room {
 
     public static void payActors() {
 
+    }
+
+    public SceneCard getScene(){
+        return this.scene;
     }
 }
