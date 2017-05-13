@@ -2,29 +2,28 @@
 
 
 public class Set extends Room {
-    
-    SceneCard scene;
-    int shotTokens;
-    boolean sceneFaceUp = false;
 
-    Role[] roles;
+    private SceneCard scene;
+    private int shots;
+    private int shotTokens;
+    private boolean sceneFaceUp = false;
 
-    public Set(String name, int shotTokens, int numRoles, Role[] roles){
-        super(name);
+    private Role[] roles;
+
+    public Set(String name, int shotTokens, int numRoles, Role[] roles, String[] neighbors){
+        super(name, neighbors);
         this.scene = scene;
         this.roles = roles;
+        this.shotTokens = shotTokens;
+        this.shots = shotTokens;
     }
 
-    public static void addScene() {
-
+    public void addScene(SceneCard scene) {
+        this.scene = scene;
     }
 
-    public static void addRoles() {
-
-    }
-
-    private static void flipSceneCard() {
-
+    public void flipSceneCard() {
+        this.sceneFaceUp = true;
     }
 
     private static void endScene() {
@@ -35,8 +34,8 @@ public class Set extends Room {
 
     }
 
-    private static void removeShotToken() {
-
+    private void removeShotToken() {
+        shotTokens--;
     }
 
     public static void payActors() {
@@ -46,4 +45,9 @@ public class Set extends Room {
     public SceneCard getScene(){
         return this.scene;
     }
+
+    public Role[] getRoles(){
+        return this.roles;
+    }
+
 }

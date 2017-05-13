@@ -1,4 +1,5 @@
-
+import java.util.*;
+import java.io.*;
 
 public class Player {
 
@@ -13,30 +14,57 @@ public class Player {
     Set set;
     CastingOffice castingOffice;
     */
-    private Role role;
+    private Role role = null;
 
     // Constructor
     public Player (String name){
         this.name = name;
     }
 
-    public void rehearse() {
-        
+    public boolean rehearse(SceneCard card) {
+
+        boolean success = false;
+
+        int budget = card.getBudget();
+        int rehearseCounter = role.getRehearseBonus();
+
+        if((rehearseCounter - 2) <= budget){
+            role.incrementRehearse();
+            success = true;
+            System.out.println("Successfully rehearsed your part!\n");
+        }else if((rehearseCounter - 1) <= budget){
+            System.out.println("You've already rehearsed enough to master the role! (Guaranteed successful act)\n");
+        }
+
+        if(!success){
+            System.out.println("You cannot rehearse!\n");
+        }
+
+        return success;
     }
 
-    public void upgrade(){
+    public boolean upgrade(){
 
+        boolean success = false;
+        Scanner console = new Scanner(System.in);
+        String choice;
+
+        if(rank != 6){
+            System.out.print("Which rank would you like to upgrade to?  ");
+            choice = console.next();
+            int rankChoice = Integer.parseInt(choice);
+
+            if((rankChoice == 2) && (rank == 1) && ((cash >= 4) || (credits >= 5))){
+                rank = rankChoice;
+            }else if((rankChoice == 3) && (rank < 3) && ((cash >= 10) || (credits >= 10))){
+                rank =2;
+            }
+        }
+
+        return success;
     }
 
     public void act(){
-
-    }
-
-    public void getLocation() {
-
-    }
-
-    public void changeRoom(Room newroom) {
 
     }
 

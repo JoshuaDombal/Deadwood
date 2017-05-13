@@ -4,24 +4,26 @@
 public class Room {
 
     private String name;
-    private Player[] players;
-    private Room[] adjacent;
+    private Player[] players = new Player[8];
+    //private Room[] adjacent;
     private int roomIndex = 0;
+    private String[] neighbors;
 
-    public Room(String name) {
+    public Room(String name, String[] neighbors) {
         this.name = name;
+        this.neighbors = neighbors;
     }
 
-    public Room[] getAdjacent(){
-        return this.adjacent;
+    public String[] getNeighbors(){
+        return this.neighbors;
     }
 
     public String getName(){
-        return this.name;
+        return name;
     }
 
     public void addPlayer(Player player){
-        players[roomIndex] = player;
-        roomIndex++;
+        this.players[roomIndex] = player;
+        this.roomIndex++;
     }
 }
