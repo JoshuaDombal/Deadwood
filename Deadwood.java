@@ -41,7 +41,6 @@ public class Deadwood {
             -pop a player from the PlayerQueue
             -present them with appropriate options and information for their turn
             -take input of there choice, check if it is valid, call corresponding method for choice
-            -push current player back into the PlayerQueue
     */
     private static void playGame() {
 
@@ -63,6 +62,8 @@ public class Deadwood {
 
             //dispaly possible actions for the current player based on their location
             //set booleans accordingly
+
+            System.out.println("Available actions: \n");
             if(!(current.getRole() == (null))){
                 inRole = true;
                 System.out.println("    -Act\n");
@@ -134,24 +135,38 @@ public class Deadwood {
                         //check adjacent to see if the room they chose is a nieghboring room
                         for(int i = 0; i < adjacent.length; i++){
 
+                            if(adjacent[i] == null){
+                                break;
+                            }
+
                             //if their choice was valid...
                             if(adjacent[i].equals(choice)){
 
                                 //set bool for location valid
                                 validLocation = true;
 
+                                System.out.println("Successful move!\n");
+
+                                System.out.println("-----------------------------------------------------------------------\n");
+
                                 //set booleans to indicate if player is NOW in casting office or trialer
                                 if(choice.equals("Casting Office")){
                                     inCO = true;
-                                }else if(choice.equals("Trialer")){
+                                }else if(choice.equals("trailer")){
                                     inTrl = true;
+                                }else{
+                                    System.out.println("New Location Info:\n");
                                 }
 
                                 //update player room and rooms player
                                 current.updateRoom(getRoom(choice));
-                                current.getRoom().addPlayer(current);
+
+
+                                //current.getRoom().addPlayer(current);
 
                                 System.out.print("\n");
+
+                                break;
                             }
                         }
 
@@ -172,7 +187,7 @@ public class Deadwood {
                 }
 
                 //if the player is moving and they're not in the casting office or the trailer...
-                if((mov) && ((!current.getRoom().getName().equals("Casting Office")) || (!current.getRoom().getName().equals("Trailer")))){
+                if((mov) && ((!current.getRoom().getName().equals("Casting Office")) && (!current.getRoom().getName().equals("trailer")))){
 
 
                     //get the set and SceneCard of the player's new location
@@ -195,6 +210,11 @@ public class Deadwood {
                         //display roles on the set and all pertinant info
                         System.out.println("Roles on set:\n");
                         for(int i = 0; i < setRoles.length; i++){
+
+                            if(setRoles[i] == null){
+                                break;
+                            }
+
                             System.out.println("    " + setRoles[i].getName());
                             System.out.println("    \"" + setRoles[i].getLine() + "\"\n");
                             System.out.println("    -Rank: " + setRoles[i].getRank());
@@ -202,18 +222,26 @@ public class Deadwood {
                             System.out.println("    -Rehearsal Bonus: " + setRoles[i].getRehearseBonus() + "\n");
                         }
 
-                        //get the palyers input for if they want to take a role
-                        System.out.print("Would you like to take a role? ('Yes' or 'No') ");
-                        choice = console.nextLine();
-
+                        //create bool for if they typed yes or no for wanting a role or not
+                        boolean roleChoiceValid = false;
                         //create bool for is player wants role
                         boolean wantRole = false;
 
-                        //set wantRole to true if the player wants to take a role
-                        if(choice.equals("Yes")){
-                            wantRole = true;
-                        }
+                        while(!roleChoiceValid){
+                            //get the palyers input for if they want to take a role
+                            System.out.print("Would you like to take a role? ('Yes' or 'No') ");
+                            choice = console.nextLine();
 
+                            //set wantRole to true if the player wants to take a role
+                            if(choice.equals("Yes")){
+                                wantRole = true;
+                                roleChoiceValid = true;
+                            }else if(!choice.equals("No")){
+                                System.out.println("Please input either 'Yes' or 'No'\n");
+                            }else{
+                                roleChoiceValid = true;
+                            }
+                        }
                         if(wantRole){
 
                             //if the player wants to take a role set bool for taking role loop
@@ -231,6 +259,10 @@ public class Deadwood {
 
                                     //look through the set roles to see if their choice was valid
                                     for(int i = 0; i < setRoles.length; i++){
+
+                                        if(setRoles[i] == null){
+                                            break;
+                                        }
 
                                         //if the role is in the set and it is not occupied, take role
                                         if(setRoles[i].getName().equals(choice)){
@@ -252,6 +284,10 @@ public class Deadwood {
 
                                     //go through the roles on the scene card to check if player choice is valid
                                     for(int i = 0; i < cardRoles.length; i++){
+
+                                        if(cardRoles[i] == null){
+                                            break;
+                                        }
 
                                         //if the role is in the set and it is not occupied, take role
                                         if(cardRoles[i].getName().equals(choice)){
@@ -288,6 +324,7 @@ public class Deadwood {
 
             //player turn ended, put player back in PlayerQueue
             System.out.println(current.getName() + "'s turn has ended...\n");
+            System.out.println("\n------------------------------------------------------------------------\n");
 
         }
 
@@ -374,7 +411,6 @@ public class Deadwood {
         rooms = Reader.getRooms();
         sets = Reader.getSets();
 
-
         drawSceneCards();
 
         Scanner console = new Scanner(System.in);
@@ -403,11 +439,11 @@ public class Deadwood {
 
             //ask the player to type in a player name
             System.out.println("Please enter the name of player " + numPlayers  + " (Type 'done' when you have finished entering player names)");
-            String givenName = console.next();
+            String givenName = console.nextLine();
 
             //if they type 'done', check and make sure there are at least two players
             if(givenName.equals("done")){
-                if(numPlayers < 2){
+                if(numPlayers < 3){
                     System.out.println("Error: Not enough players");
                 }else{
                     playInfoNotDone = false;
@@ -437,7 +473,7 @@ public class Deadwood {
         }
 
         //get a reference to the trailer room
-        Room trailer = getRoom("Trailer");
+        Room trailer = getRoom("trailer");
 
         //set every players location to the trialer and start them out with the
         // appropriate money/credits for the number of players in the game
@@ -456,8 +492,6 @@ public class Deadwood {
             }else{
                 current.updateRoom(trailer);
             }
-
-            players.add(current);
         }
     }
 
@@ -529,7 +563,7 @@ public class Deadwood {
         System.out.print("Would you like to play again? ('Yes' or 'No')");
 
         //if they would not like to play again they type 'No' and the wantToPlay boolean is set accordingly
-        if(console.next().equals("No")){
+        if(console.nextLine().equals("No")){
             wantToPlay = false;
         }
     }
@@ -550,7 +584,8 @@ public class Deadwood {
         System.out.println("    -Money: " + currentPlayer.getCash());
         System.out.println("    -Credits: " + currentPlayer.getCredits());
         System.out.println("    -rank: " + currentPlayer.getRank() + "\n");
-        System.out.println(currentRoom.getName() + "\n");
+        System.out.println("-----------------------------------------------------------------------------------------\n");
+        System.out.println("Room: " + currentRoom.getName() + "\n");
 
         //if the player is in the casting office display the upgrade menu and the adjacent rooms
         if(currentRoom.getName().equals("Casting Office")){
@@ -560,7 +595,7 @@ public class Deadwood {
             displayAdjacentRooms(currentRoom);
 
         //if the player is in the trailer display the adjacent rooms
-        }else if(currentRoom.getName().equals("Trailer")){
+        }else if(currentRoom.getName().equals("trailer")){
 
             displayAdjacentRooms(currentRoom);
 
@@ -592,9 +627,14 @@ public class Deadwood {
     private static void displayAdjacentRooms(Room room){
 
         String[] adjacent = room.getNeighbors();
-        System.out.print("Adjacent Rooms: ");
+        System.out.print("Adjacent Rooms:\n\n");
         for(int i = 0; i < adjacent.length; i++){
-            System.out.print(adjacent[i] + " ");
+
+            if(adjacent[i] == null){
+                break;
+            }
+            
+            System.out.print("  -" + adjacent[i] + "\n");
         }
     }
 
@@ -602,11 +642,16 @@ public class Deadwood {
     private static void displaySceneCard(SceneCard sceneCard){
 
         Role[] roles = sceneCard.getRoles();
-        System.out.println(sceneCard.getName() + "\n");
-        System.out.println(sceneCard.getBudget() + "\n");
-        System.out.println("Roles:\n");
+        System.out.println("Name of scene: " + sceneCard.getName() + "\n");
+        System.out.println("Budget: " + sceneCard.getBudget() + "\n");
+        System.out.println("On Card Roles:\n");
         for(int i = 0; i < roles.length; i++){
             String status = "Open";
+
+            if(roles[i] == null){
+                break;
+            }
+
             if(roles[i].checkForPlayer()){
                 status = "Taken";
             }

@@ -14,6 +14,7 @@ public class PlayerQueue {
         {
             players[index] = player;
             index++;
+            realNumPlayers++;
 
         }
 
@@ -21,7 +22,7 @@ public class PlayerQueue {
 
             Player player = players[turn];
 
-            if((turn - 1) == numPlayers){
+            if((turn) == (realNumPlayers -1)){
                 turn = 0;
             }else{
                 turn++;

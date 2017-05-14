@@ -33,7 +33,7 @@ public class Role {
     }
 
     public boolean checkForPlayer() {
-        return occupied;
+        return this.occupied;
     }
 
     // This function should maybe not be in here
