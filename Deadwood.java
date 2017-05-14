@@ -92,7 +92,14 @@ public class Deadwood {
 
                 //call act if player types 'Act'
                 if((choice.equals("Act")) &&(inRole)){
-                    current.act();
+                    Set set = getSet(current.getRoom().getName());
+                    SceneCard card = set.getScene();
+                    current.act(card, set);
+
+                    if (set.getNumTokens() == 0) {
+                        set.endScene(current);
+                    }
+
                     choiceNotValid = false;
 
                 //call rehearse if player types 'Rehearse'
@@ -362,147 +369,11 @@ public class Deadwood {
         //read in cards and rooms
         sceneCards = Reader.readCards();
 
+        Reader.readRooms();
 
+        rooms = Reader.getRooms();
+        sets = Reader.getSets();
 
-
-        try {
-    File file1 = new File("board.xml");
-    DocumentBuilderFactory dbf1 = DocumentBuilderFactory.newInstance();
-    DocumentBuilder docBuilder1 = dbf1.newDocumentBuilder();
-    Document doc1 = docBuilder1.parse(file1);
-
-    sets = new ArrayList<Set>();
-    rooms = new ArrayList<Room>();
-
-
-
-    NodeList list = doc1.getElementsByTagName("board");
-    Node bNode = list.item(0);
-    Element el = (Element) bNode;
-
-    System.out.println("Board name: " + el.getAttribute("name"));
-
-    //Trailer trailer;
-    //CastingOffice castingOffice;
-    Room t;
-    String rName = "Trailer";
-    String[] ns = new String[3];
-
-
-    NodeList trailerList = el.getElementsByTagName("trailer");
-    Node trailerNode = trailerList.item(0);
-    Element tElement = (Element) trailerNode;
-
-    //NodeList nList = tElement.getElementsByTagName("neighbors");
-    //Node neNode = trailerList.item(0);
-    //Element neElement = (Element) neNode;
-
-    NodeList nList = tElement.getElementsByTagName("neighbor");
-    System.out.println(nList.getLength());
-    for (int j = 0; j < nList.getLength(); j++) {
-        Node neNode = nList.item(j);
-        Element neElement = (Element) neNode;
-
-        ns[j] = neElement.getAttribute("name");
-
-        System.out.println("TRAILER Neighbor: " + neElement.getAttribute("name"));
-    }
-
-    t = new Room(rName, ns);
-    rooms.add(t);
-
-    //System.out.println("NEIBS: " + neElement.getAttribute("name"));
-
-
-
-    NodeList setList = el.getElementsByTagName("set");
-    System.out.println(setList.getLength());
-    for (int i = 0; i < setList.getLength(); i++) {
-
-        Set set;
-
-        Room room;
-
-        String setName;
-        int nShots = 0;
-        int nRoles = 0;
-        Role[] roles = new Role[4];
-
-        String[] neighbors = new String[4];
-
-
-
-
-        Node setNode = setList.item(i);
-        Element setElement = (Element) setNode;
-
-        System.out.println("Set name: " + setElement.getAttribute("name"));
-        setName = setElement.getAttribute("name");
-
-         //GET NEIGHBORS
-        NodeList neighborList = setElement.getElementsByTagName("neighbor");
-        for (int j = 0; j < neighborList.getLength(); j++) {
-            Node neighborNode = neighborList.item(j);
-            Element neighborElement = (Element) neighborNode;
-
-            neighbors[j] = neighborElement.getAttribute("name");
-
-            System.out.println("Neighbor: " + neighborElement.getAttribute("name"));
-        }
-
-        // Gets roles
-        NodeList partList = setElement.getElementsByTagName("part");
-        for (int j = 0; j < partList.getLength(); j++) {
-            Role role;
-            String roleName;
-            int roleRank;
-            String line;
-
-            Node partNode = partList.item(j);
-            Element partElement = (Element) partNode;
-
-            System.out.println("Role name: " + partElement.getAttribute("name"));
-            roleName = partElement.getAttribute("name");
-
-            System.out.println("Role level: " + partElement.getAttribute("level"));
-            roleRank = Integer.parseInt(partElement.getAttribute("level"));
-
-            System.out.println("Role line: " + partElement.getElementsByTagName("line").item(0).getTextContent());
-            line = partElement.getElementsByTagName("line").item(0).getTextContent();
-
-            role = new Role(roleName, roleRank, line);
-            roles[j] = role;
-            nRoles++;
-        }
-
-        NodeList takeList = setElement.getElementsByTagName("take");
-        for (int j = 0; j < takeList.getLength(); j++) {
-            Node takeNode = takeList.item(j);
-            Element takeElement = (Element) takeNode;
-
-            //System.out.println("Take Number: " + takeElement.getAttribute("number"));
-            nShots++;
-        }
-
-        set = new Set(setName, nShots, nRoles, roles, neighbors);
-        room = new Room(setName, neighbors);
-
-        sets.add(set);
-        rooms.add(room);
-
-
-        System.out.println();
-
-
-    }
-
-} catch (SAXParseException err) {
-    System.out.println("Parse error");
-} catch (SAXException e) {
-    System.out.println("error");
-} catch (Throwable t) {
-    t.printStackTrace ();
-}
 
         drawSceneCards();
 
