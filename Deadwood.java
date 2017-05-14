@@ -100,7 +100,6 @@ public class Deadwood {
                     if (set.getNumTokens() == 0) {
                         set.endScene(current);
                     }
-
                     choiceNotValid = false;
 
                 //call rehearse if player types 'Rehearse'
@@ -411,6 +410,10 @@ public class Deadwood {
         rooms = Reader.getRooms();
         sets = Reader.getSets();
 
+
+
+
+
         drawSceneCards();
 
         Scanner console = new Scanner(System.in);
@@ -633,7 +636,7 @@ public class Deadwood {
             if(adjacent[i] == null){
                 break;
             }
-            
+
             System.out.print("  -" + adjacent[i] + "\n");
         }
     }

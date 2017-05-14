@@ -36,6 +36,10 @@ public class Reader{
             DocumentBuilder docBuilder1 = dbf1.newDocumentBuilder();
             Document doc1 = docBuilder1.parse(file1);
 
+            sets = new ArrayList<Set>();
+            rooms = new ArrayList<Room>();
+
+
 
             NodeList list = doc1.getElementsByTagName("board");
             Node bNode = list.item(0);
@@ -46,7 +50,7 @@ public class Reader{
             //Trailer trailer;
             //CastingOffice castingOffice;
             Room t;
-            String rName = "Trailer";
+            String rName = "trailer";
             String[] ns = new String[3];
 
 
@@ -100,7 +104,7 @@ public class Reader{
                 //System.out.println("Set name: " + setElement.getAttribute("name"));
                 setName = setElement.getAttribute("name");
 
-                 //GET NEIGHBORS
+                //GET NEIGHBORS
                 NodeList neighborList = setElement.getElementsByTagName("neighbor");
                 for (int j = 0; j < neighborList.getLength(); j++) {
                     Node neighborNode = neighborList.item(j);
@@ -141,7 +145,7 @@ public class Reader{
                     Node takeNode = takeList.item(j);
                     Element takeElement = (Element) takeNode;
 
-                    //System.out.println("Take Number: " + takeElement.getAttribute("number"));
+                    ////System.out.println("Take Number: " + takeElement.getAttribute("number"));
                     nShots++;
                 }
 
@@ -153,12 +157,14 @@ public class Reader{
 
 
                 //System.out.println();
+
+
             }
 
         } catch (SAXParseException err) {
-            System.out.println("Parse error");
+            //System.out.println("Parse error");
         } catch (SAXException e) {
-            System.out.println("error");
+            //System.out.println("error");
         } catch (Throwable t) {
             t.printStackTrace ();
         }
@@ -198,7 +204,7 @@ public class Reader{
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element cardElement = (Element) nNode;
-                    //System.out.println("Card Name : " + cardElement.getAttribute("name"));
+                    ////System.out.println("Card Name : " + cardElement.getAttribute("name"));
                     name = cardElement.getAttribute("name");
 
                     b = Integer.parseInt(cardElement.getAttribute("budget"));
@@ -237,9 +243,9 @@ public class Reader{
             }
 
         } catch (SAXParseException err) {
-            System.out.println("Parse error");
+            //System.out.println("Parse error");
         } catch (SAXException e) {
-            System.out.println("error");
+            //System.out.println("error");
         } catch (Throwable t) {
             t.printStackTrace ();
         }

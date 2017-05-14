@@ -1,4 +1,3 @@
-
 public class Set extends Room {
 
     private SceneCard scene;
