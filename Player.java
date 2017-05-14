@@ -1,6 +1,8 @@
 import java.util.*;
 import java.io.*;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Player {
 
     private String name;
@@ -51,7 +53,7 @@ public class Player {
 
         if(rank != 6){
             System.out.print("Which rank would you like to upgrade to?  ");
-            choice = console.next();
+            choice = console.nextLine();
             int rankChoice = Integer.parseInt(choice);
 
             if((rankChoice == 2) && (rank == 1) && ((cash >= 4) || (credits >= 5))){
@@ -64,7 +66,47 @@ public class Player {
         return success;
     }
 
-    public void act(){
+    public void act(SceneCard card, Set set){
+        int diceNum;
+        int rehearseB;
+
+        // Roll dice
+        diceNum = ThreadLocalRandom.current().nextInt(1,7);
+
+        // Get current rehearse bonus
+        rehearseB = role.getRehearseBonus();
+
+        // If roll is successful
+        if ((rehearseB + diceNum) >= card.getBudget()) {
+            System.out.println("You successfully acted!");
+
+            set.removeShotToken();
+
+
+            // If player is in an on card role
+            // Else: off card
+            if (role.checkOnCard()) {
+                System.out.println("You earned 2 credits for acting!");
+                credits += 2;
+            } else if (!role.checkOnCard()) {
+                System.out.println("You earned 1 credit and 1 dollar for acting!");
+                credits += 1;
+                cash += 1;
+            }
+
+            // Check if
+
+        // Unsuccessful role
+        } else {
+            System.out.println("Sorry, you didn't role high enough.");
+
+            // Pay off card player one dollar for losing
+            if (!role.checkOnCard()) {
+                System.out.println("You earned 1 dollar for being an extra.");
+                cash += 1;
+            }
+        }
+
 
     }
 
@@ -118,6 +160,10 @@ public class Player {
 
     public Role getRole(){
         return this.role;
+    }
+
+    public void removeRole() {
+        role = null;
     }
 
 }

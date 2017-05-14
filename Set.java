@@ -1,6 +1,4 @@
 
-
-
 public class Set extends Room {
 
     private SceneCard scene;
@@ -26,20 +24,52 @@ public class Set extends Room {
         this.sceneFaceUp = true;
     }
 
-    private static void endScene() {
+    public void endScene(Player player) {
+
+        // check for players on card
+        if (scene.occupiedStatus()) {
+            scene.bonusPayout();
+
+            payActors();
+
+        }
+
+        scene = null;
+
+        // Removes role from each player
+        int i = 0;
+        while ((roles[i] != null) && (i < roles.length)) {
+            if (roles[i].checkForPlayer()) {
+                roles[i].getPlayer().removeRole();
+            }
+            i++;
+
+        }
+
+        roles = null;
+
+        Deadwood.decrementScene();
 
     }
 
-    public static void clearRoles() {
-
+    public void clearRoles() {
+        roles = null;
     }
 
-    private void removeShotToken() {
+    public void removeShotToken() {
         shotTokens--;
     }
 
-    public static void payActors() {
-
+    // Pays extras
+    public void payActors() {
+        int i = 0;
+        while ((roles[i] != null) && (i < roles.length)) {
+            if (roles[i].checkForPlayer()) {
+                int payout = roles[i].getRank();
+                roles[i].getPlayer().updateCash(payout);
+            }
+            i++;
+        }
     }
 
     public SceneCard getScene(){
@@ -48,6 +78,10 @@ public class Set extends Room {
 
     public Role[] getRoles(){
         return this.roles;
+    }
+
+    public int getNumTokens() {
+        return this.shotTokens;
     }
 
 }
