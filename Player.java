@@ -50,20 +50,80 @@ public class Player {
         boolean success = false;
         Scanner console = new Scanner(System.in);
         String choice;
+        String paymentChoice;
 
         if(rank != 6){
             System.out.print("Which rank would you like to upgrade to?  ");
             choice = console.nextLine();
             int rankChoice = Integer.parseInt(choice);
 
-            if((rankChoice == 2) && (rank == 1) && ((cash >= 4) || (credits >= 5))){
-                rank = rankChoice;
-            }else if((rankChoice == 3) && (rank < 3) && ((cash >= 10) || (credits >= 10))){
-                rank =2;
+            System.out.println("Would you like to pay with cash or credits? ");
+            paymentChoice = console.nextLine();
+            //int payChoice = Integer.parseInt(paymentChoice);
+
+
+            if(rankChoice == 2){
+                if ((paymentChoice.equals("cash")) && (cash >= 4)) {
+                    cash = cash - 4;
+                    rank = 2;
+                } else if ((paymentChoice.equals("credits")) && (credits >= 5)) {
+                    credits = credits - 5;
+                } else {
+                    return false;
+                }
+
+
+            }else if((rankChoice == 3) && (rank < 3)){
+                if ((paymentChoice.equals("cash")) && (cash >= 10)) {
+                    cash = cash - 10;
+                    rank = 3;
+                } else if ((paymentChoice.equals("credits")) && (credits >= 10)) {
+                    credits = credits - 10;
+                    rank = 3;
+                } else {
+                    return false;
+                }
+
+
+            } else if((rankChoice == 4) && (rank < 4)){
+                if ((paymentChoice.equals("cash")) && (cash >= 18)) {
+                    cash = cash - 18;
+                    rank = 4;
+                } else if ((paymentChoice.equals("credits")) && (credits >= 15)) {
+                    credits = credits - 15;
+                    rank = 4;
+                } else {
+                    return false;
+                }
+
+
+            } else if((rankChoice == 5) && (rank < 5)){
+                if ((paymentChoice.equals("cash")) && (cash >= 28)) {
+                    cash = cash - 28;
+                    rank = 5;
+                } else if ((paymentChoice.equals("credits")) && (credits >= 20)) {
+                    credits = credits - 20;
+                    rank = 5;
+                } else {
+                    return false;
+                }
+
+
+            } else if((rankChoice == 6) && (rank < 6) && ((cash >= 40) || (credits >= 25))){
+                if ((paymentChoice.equals("cash")) && (cash >= 40)) {
+                    cash = cash - 40;
+                    rank = 6;
+                } else if ((paymentChoice.equals("credits")) && (credits >= 25)) {
+                    credits = credits - 25;
+                    rank = 6;
+                } else {
+                    return false;
+                }
+
             }
         }
 
-        return success;
+        return true;
     }
 
     public void act(SceneCard card, Set set){
