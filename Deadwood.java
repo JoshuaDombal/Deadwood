@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
 public class Deadwood {
     //bools for the loops in main and play game
     private static int daysRemaining = 4;
-    private static int scenesRemaining = 10;
+    private static int scenesRemaining = 2;
     //initialized to 1 for print statements in start game, exectly represents number of players
     private static int numPlayers = 1;
     //bool is true when players start game and when they day they would like to play again
@@ -45,6 +45,8 @@ public class Deadwood {
     private static void playGame() {
 
         while(scenesRemaining > 1){
+
+            System.out.println("scenesRemaining: " + scenesRemaining);
 
             //pop player from queue
             Player current = players.remove();
@@ -215,20 +217,26 @@ public class Deadwood {
                         set.flipSceneCard();
 
                         //display roles on the set and all pertinant info
-                        System.out.println("Roles on set:\n");
+                        System.out.println("Roles on Set:\n");
                         for(int i = 0; i < setRoles.length; i++){
 
                             if(setRoles[i] == null){
                                 break;
                             }
 
-                            System.out.println("    " + setRoles[i].getName());
-                            System.out.println("    \"" + setRoles[i].getLine() + "\"\n");
-                            System.out.println("    -Rank: " + setRoles[i].getRank());
-                            System.out.println("    -Budget: " + set.getScene().getBudget());
-                            System.out.println("    -Rehearsal Bonus: " + setRoles[i].getRehearseBonus() + "\n");
 
+                            System.out.println("Name: " + setRoles[i].getName());
+                            System.out.println("\n  -Line: \"" + setRoles[i].getLine() + "\"");
+                            System.out.println("  -Rank: " + setRoles[i].getRank());
+                            System.out.println("  -Budget: " + set.getScene().getBudget());
+                            System.out.println("  -Rehearsal Bonus: " + setRoles[i].getRehearseBonus() + "\n");
 
+                            String status = "Open";
+                            if(setRoles[i].checkForPlayer()){
+                                status = "Taken";
+                            }
+
+                            System.out.println("  -Status: " + status + "\n");
                         }
 
                         //create bool for if they typed yes or no for wanting a role or not
@@ -275,6 +283,7 @@ public class Deadwood {
 
                                         //if the role is in the set and it is not occupied, take role
                                         if(setRoles[i].getName().equals(choice)){
+
                                             if((!setRoles[i].checkForPlayer()) && (setRoles[i].getRank() <= current.getRank())){
                                                 System.out.println("Role taken successfully\n");
                                                 current.updateRole(setRoles[i]);
@@ -282,8 +291,10 @@ public class Deadwood {
                                                 validRole = true;
 
                                             //if the role is in the set but is occupied, print error and ask for input again via loop
+                                            }else if(!(setRoles[i].getRank() <= current.getRank())){
+                                                System.out.println("\nPlayer rank not high enough to take role\n");
                                             }else{
-                                                System.out.println("Role already filled! Please choose again\n");
+                                                System.out.println("\nRole already filled! Please choose again\n");
                                             }
                                         }
                                     }
@@ -300,15 +311,16 @@ public class Deadwood {
 
                                         //if the role is in the set and it is not occupied, take role
                                         if(cardRoles[i].getName().equals(choice)){
-                                            if(!cardRoles[i].checkForPlayer()){
+
+                                            if((!cardRoles[i].checkForPlayer()) && (cardRoles[i].getRank() <= current.getRank())){
                                                 System.out.println("Role taken successfully\n");
                                                 current.updateRole(cardRoles[i]);
                                                 cardRoles[i].addPlayer(current);
                                                 validRole = true;
-
-                                            //if the role is in the set but is occupied, print error and ask for input again via loop
+                                            }else if(!(cardRoles[i].getRank() <= current.getRank())){
+                                                System.out.println("\nPlayer rank not high enough to take role\n");
                                             }else{
-                                                System.out.println("Role already filled! Please choose again\n");
+                                                System.out.println("\nRole already filled! Please choose again\n");
                                             }
                                         }
                                     }
@@ -376,7 +388,7 @@ public class Deadwood {
         daysRemaining--;
         scenesRemaining = 10;
 
-        Room trailer = getRoom("Trailer");
+        Room trailer = getRoom("trailer");
 
         for(int i = 0; i < numPlayers; i++){
             Player current = players.remove();
@@ -632,13 +644,15 @@ public class Deadwood {
             System.out.println("    \"" + role.getLine() + "\"\n");
             System.out.println("    -Rank: " + role.getRank());
             System.out.println("    -Budget: " + set.getScene().getBudget());
+
             System.out.println("    -Rehearsal Bonus: " + role.getRehearseBonus() + "\n");
-            System.out.println("    -Shots left: " + set.getNumTokens());
+            System.out.println("    -Number of Shots Remaining: " + set.getNumTokens() + "\n");
             if (role.checkOnCard()) {
                 System.out.println("    -Role Status: On card");
             } else {
                 System.out.println("    -Role Status: Off card");
             }
+
 
         //otherwise the player must be in a set. In which case display the scene card and adjacent rooms
         }else{
@@ -648,8 +662,6 @@ public class Deadwood {
             if(set.getScene() != null){
                 displaySceneCard(set.getScene());
             }
-
-
 
             displayAdjacentRooms(currentRoom);
         }
@@ -689,7 +701,7 @@ public class Deadwood {
             if(roles[i].checkForPlayer()){
                 status = "Taken";
             }
-            System.out.println("Name: " + roles[i].getName() + "\n  -Rank: " + roles[i].getRank() + "\n  -Status: " + status + "\n");
+            System.out.println("Name: " + roles[i].getName() + "\n\n  -Line: \"" + roles[i].getLine() + "\"" + "\n  -Rank: " + roles[i].getRank() + "\n  -Status: " + status + "\n");
         }
     }
 

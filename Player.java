@@ -72,6 +72,7 @@ public class Player {
 
         // Roll dice
         diceNum = ThreadLocalRandom.current().nextInt(1,7);
+        System.out.println("You rolled a " + diceNum + "!");
 
         // Get current rehearse bonus
         rehearseB = role.getRehearseBonus();
