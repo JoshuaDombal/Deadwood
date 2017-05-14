@@ -68,7 +68,7 @@ public class Deadwood {
                 inRole = true;
                 System.out.println("    -Act\n");
                 System.out.println("    -Rehearse\n");
-            }else if(current.getRoom().getName().equals("Casting Office")){
+            }else if(current.getRoom().getName().equals("office")){
                 inCO = true;
                 System.out.println("    -Move\n");
                 System.out.println("    -Upgrade\n");
@@ -100,7 +100,6 @@ public class Deadwood {
                     if (set.getNumTokens() == 0) {
                         set.endScene(current);
                     }
-
                     choiceNotValid = false;
 
                 //call rehearse if player types 'Rehearse'
@@ -150,7 +149,7 @@ public class Deadwood {
                                 System.out.println("-----------------------------------------------------------------------\n");
 
                                 //set booleans to indicate if player is NOW in casting office or trialer
-                                if(choice.equals("Casting Office")){
+                                if(choice.equals("office")){
                                     inCO = true;
                                 }else if(choice.equals("trailer")){
                                     inTrl = true;
@@ -167,6 +166,10 @@ public class Deadwood {
                                 System.out.print("\n");
 
                                 break;
+                            } else if (choice.equals("tooffice")) {
+                                inCO = true;
+                                current.updateRoom(getRoom("office"));
+                                validLocation = true;
                             }
                         }
 
@@ -184,10 +187,14 @@ public class Deadwood {
                         choiceNotValid = false;
                     }
 
+                    // Cheat code
+                } else if(choice.equals("tinkerbell")) {
+                    current.updateCash(99999);
+                    current.updateCredits(99999);
                 }
 
                 //if the player is moving and they're not in the casting office or the trailer...
-                if((mov) && ((!current.getRoom().getName().equals("Casting Office")) && (!current.getRoom().getName().equals("trailer")))){
+                if((mov) && ((!current.getRoom().getName().equals("office")) && (!current.getRoom().getName().equals("trailer")))){
 
 
                     //get the set and SceneCard of the player's new location
@@ -220,6 +227,8 @@ public class Deadwood {
                             System.out.println("    -Rank: " + setRoles[i].getRank());
                             System.out.println("    -Budget: " + set.getScene().getBudget());
                             System.out.println("    -Rehearsal Bonus: " + setRoles[i].getRehearseBonus() + "\n");
+
+
                         }
 
                         //create bool for if they typed yes or no for wanting a role or not
@@ -411,6 +420,10 @@ public class Deadwood {
         rooms = Reader.getRooms();
         sets = Reader.getSets();
 
+
+
+
+
         drawSceneCards();
 
         Scanner console = new Scanner(System.in);
@@ -588,11 +601,22 @@ public class Deadwood {
         System.out.println("Room: " + currentRoom.getName() + "\n");
 
         //if the player is in the casting office display the upgrade menu and the adjacent rooms
-        if(currentRoom.getName().equals("Casting Office")){
-
-            CastingOffice.displayUpgradeOptions();
+        if(currentRoom.getName().equals("office")){
 
             displayAdjacentRooms(currentRoom);
+
+            System.out.println("----Rank----Dollars----Credits----");
+            System.out.println("----------------------------------");
+            System.out.println("|    2        4           5      |");
+            System.out.println("----------------------------------");
+            System.out.println("|    3        10          10     |");
+            System.out.println("----------------------------------");
+            System.out.println("|    4        18          15     |");
+            System.out.println("----------------------------------");
+            System.out.println("|    5        28          20     |");
+            System.out.println("----------------------------------");
+            System.out.println("|    6        40          25     |");
+            System.out.println("----------------------------------\n");
 
         //if the player is in the trailer display the adjacent rooms
         }else if(currentRoom.getName().equals("trailer")){
@@ -609,13 +633,23 @@ public class Deadwood {
             System.out.println("    -Rank: " + role.getRank());
             System.out.println("    -Budget: " + set.getScene().getBudget());
             System.out.println("    -Rehearsal Bonus: " + role.getRehearseBonus() + "\n");
+            System.out.println("    -Shots left: " + set.getNumTokens());
+            if (role.checkOnCard()) {
+                System.out.println("    -Role Status: On card");
+            } else {
+                System.out.println("    -Role Status: Off card");
+            }
 
         //otherwise the player must be in a set. In which case display the scene card and adjacent rooms
         }else{
 
             Set set = getSet(currentRoom.getName());
 
-            displaySceneCard(set.getScene());
+            if(set.getScene() != null){
+                displaySceneCard(set.getScene());
+            }
+
+
 
             displayAdjacentRooms(currentRoom);
         }
@@ -633,7 +667,7 @@ public class Deadwood {
             if(adjacent[i] == null){
                 break;
             }
-            
+
             System.out.print("  -" + adjacent[i] + "\n");
         }
     }

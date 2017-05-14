@@ -1,10 +1,12 @@
 
+import java.util.*;
 
-public class CastingOffice extends Room{
+public class CastingOffice extends Room {
 
-    public CastingOffice(String name, String[] neighbors){
-        super(name, neighbors);
+    public CastingOffice(String name) {
+        super(name);
     }
+
 
     public static void displayUpgradeOptions() {
         System.out.println("----Rank----Dollars----Credits----");

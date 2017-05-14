@@ -36,6 +36,10 @@ public class Reader{
             DocumentBuilder docBuilder1 = dbf1.newDocumentBuilder();
             Document doc1 = docBuilder1.parse(file1);
 
+            sets = new ArrayList<Set>();
+            rooms = new ArrayList<Room>();
+
+
 
             NodeList list = doc1.getElementsByTagName("board");
             Node bNode = list.item(0);
@@ -43,10 +47,51 @@ public class Reader{
 
             //System.out.println("Board name: " + el.getAttribute("name"));
 
+
+
+            // Casting Office read
+            Room co;
+            String oName = "office";
+            String[] officeNeighbors = new String[3];
+
+
+            NodeList officeList = el.getElementsByTagName("office");
+            Node officeNode = officeList.item(0);
+            Element oElement = (Element) officeNode;
+
+            //NodeList nList = tElement.getElementsByTagName("neighbors");
+            //Node neNode = trailerList.item(0);
+            //Element neElement = (Element) neNode;
+
+
+            NodeList neiList = oElement.getElementsByTagName("neighbor");
+            //System.out.println(nList.getLength());
+            for (int j = 0; j < neiList.getLength(); j++) {
+                Node neNode = neiList.item(j);
+                Element neElement = (Element) neNode;
+
+                officeNeighbors[j] = neElement.getAttribute("name");
+
+                System.out.println("OFFICE Neighbor: " + neElement.getAttribute("name"));
+            }
+
+            co = new Room(oName, officeNeighbors);
+            rooms.add(co);
+
+
+
+
+
+
+
+
+
+
+
             //Trailer trailer;
             //CastingOffice castingOffice;
             Room t;
-            String rName = "Trailer";
+            String rName = "trailer";
             String[] ns = new String[3];
 
 
@@ -57,6 +102,7 @@ public class Reader{
             //NodeList nList = tElement.getElementsByTagName("neighbors");
             //Node neNode = trailerList.item(0);
             //Element neElement = (Element) neNode;
+
 
             NodeList nList = tElement.getElementsByTagName("neighbor");
             //System.out.println(nList.getLength());
@@ -100,7 +146,7 @@ public class Reader{
                 //System.out.println("Set name: " + setElement.getAttribute("name"));
                 setName = setElement.getAttribute("name");
 
-                 //GET NEIGHBORS
+                //GET NEIGHBORS
                 NodeList neighborList = setElement.getElementsByTagName("neighbor");
                 for (int j = 0; j < neighborList.getLength(); j++) {
                     Node neighborNode = neighborList.item(j);
@@ -131,7 +177,7 @@ public class Reader{
                     //System.out.println("Role line: " + partElement.getElementsByTagName("line").item(0).getTextContent());
                     line = partElement.getElementsByTagName("line").item(0).getTextContent();
 
-                    role = new Role(roleName, roleRank, line);
+                    role = new Role(roleName, roleRank, line, false);
                     roles[j] = role;
                     nRoles++;
                 }
@@ -141,7 +187,7 @@ public class Reader{
                     Node takeNode = takeList.item(j);
                     Element takeElement = (Element) takeNode;
 
-                    //System.out.println("Take Number: " + takeElement.getAttribute("number"));
+                    ////System.out.println("Take Number: " + takeElement.getAttribute("number"));
                     nShots++;
                 }
 
@@ -153,12 +199,14 @@ public class Reader{
 
 
                 //System.out.println();
+
+
             }
 
         } catch (SAXParseException err) {
-            System.out.println("Parse error");
+            //System.out.println("Parse error");
         } catch (SAXException e) {
-            System.out.println("error");
+            //System.out.println("error");
         } catch (Throwable t) {
             t.printStackTrace ();
         }
@@ -198,7 +246,7 @@ public class Reader{
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element cardElement = (Element) nNode;
-                    //System.out.println("Card Name : " + cardElement.getAttribute("name"));
+                    ////System.out.println("Card Name : " + cardElement.getAttribute("name"));
                     name = cardElement.getAttribute("name");
 
                     b = Integer.parseInt(cardElement.getAttribute("budget"));
@@ -225,7 +273,7 @@ public class Reader{
                         //System.out.println("Role Line : " + partElement.getElementsByTagName("line").item(0).getTextContent());
                         String l = partElement.getElementsByTagName("line").item(0).getTextContent();
 
-                        Role rRole = new Role(n, lev, l);
+                        Role rRole = new Role(n, lev, l, true);
                         roles[j] = rRole;
 
                     }
@@ -237,9 +285,9 @@ public class Reader{
             }
 
         } catch (SAXParseException err) {
-            System.out.println("Parse error");
+            //System.out.println("Parse error");
         } catch (SAXException e) {
-            System.out.println("error");
+            //System.out.println("error");
         } catch (Throwable t) {
             t.printStackTrace ();
         }
