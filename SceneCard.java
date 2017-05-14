@@ -49,13 +49,10 @@ public class SceneCard {
             for (int i = 0; i < numRoles; i++) {
                 if (roles[i].checkForPlayer()) {
                     roles[i].getPlayer().updateCash(bonus[i]);
-
-                    // Removes role from Player class
-                    roles[i].getPlayer().removeRole();
                 }
             }
 
-
+            //roles[i].getPlayer().removeRole();
         }
 
     }
@@ -102,10 +99,6 @@ public class SceneCard {
 
     public boolean checkIfPlayed(){
         return played;
-    }
-
-    public void removeRoles() {
-        roles = null;
     }
 
 }
