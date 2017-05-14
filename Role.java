@@ -12,13 +12,13 @@ public class Role {
     private boolean occupied;
 
 
-    public Role (String name, int roleRank, String line) {
+    public Role (String name, int roleRank, String line, boolean onCard) {
       this.name = name;
       this.roleRank = roleRank;
       this.player = null;
       this.rehearseCounter = 0;
       //this.sceneBonus = 0;
-      this.onCard = false;
+      this.onCard = onCard;
       this.occupied = false;
       this.line = line;
     }
@@ -33,7 +33,7 @@ public class Role {
     }
 
     public boolean checkForPlayer() {
-        return this.occupied;
+        return occupied;
     }
 
     // This function should maybe not be in here

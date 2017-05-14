@@ -37,10 +37,13 @@ public class Set extends Room {
 
         // Removes role from each player
         int i = 0;
-        while ((roles[i] != null) && (i < roles.length)) {
-            if (roles[i].checkForPlayer()) {
-                roles[i].getPlayer().removeRole();
+        while (i < roles.length) {
+            if (roles[i] != null) {
+                if (roles[i].checkForPlayer()) {
+                    roles[i].getPlayer().removeRole();
+                }
             }
+
             i++;
 
         }

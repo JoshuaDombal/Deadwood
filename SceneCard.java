@@ -49,6 +49,14 @@ public class SceneCard {
             for (int i = 0; i < numRoles; i++) {
                 if (roles[i].checkForPlayer()) {
                     roles[i].getPlayer().updateCash(bonus[i]);
+
+
+                    System.out.println(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " as a bonus!");
+
+                    // Removes role from Player class
+                    roles[i].getPlayer().removeRole();
+
+
                 }
             }
 

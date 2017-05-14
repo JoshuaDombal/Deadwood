@@ -47,6 +47,47 @@ public class Reader{
 
             //System.out.println("Board name: " + el.getAttribute("name"));
 
+
+
+            // Casting Office read
+            Room co;
+            String oName = "office";
+            String[] officeNeighbors = new String[3];
+
+
+            NodeList officeList = el.getElementsByTagName("office");
+            Node officeNode = officeList.item(0);
+            Element oElement = (Element) officeNode;
+
+            //NodeList nList = tElement.getElementsByTagName("neighbors");
+            //Node neNode = trailerList.item(0);
+            //Element neElement = (Element) neNode;
+
+
+            NodeList neiList = oElement.getElementsByTagName("neighbor");
+            //System.out.println(nList.getLength());
+            for (int j = 0; j < neiList.getLength(); j++) {
+                Node neNode = neiList.item(j);
+                Element neElement = (Element) neNode;
+
+                officeNeighbors[j] = neElement.getAttribute("name");
+
+                System.out.println("OFFICE Neighbor: " + neElement.getAttribute("name"));
+            }
+
+            co = new Room(oName, officeNeighbors);
+            rooms.add(co);
+
+
+
+
+
+
+
+
+
+
+
             //Trailer trailer;
             //CastingOffice castingOffice;
             Room t;
@@ -61,6 +102,7 @@ public class Reader{
             //NodeList nList = tElement.getElementsByTagName("neighbors");
             //Node neNode = trailerList.item(0);
             //Element neElement = (Element) neNode;
+
 
             NodeList nList = tElement.getElementsByTagName("neighbor");
             //System.out.println(nList.getLength());
@@ -135,7 +177,7 @@ public class Reader{
                     //System.out.println("Role line: " + partElement.getElementsByTagName("line").item(0).getTextContent());
                     line = partElement.getElementsByTagName("line").item(0).getTextContent();
 
-                    role = new Role(roleName, roleRank, line);
+                    role = new Role(roleName, roleRank, line, false);
                     roles[j] = role;
                     nRoles++;
                 }
@@ -231,7 +273,7 @@ public class Reader{
                         //System.out.println("Role Line : " + partElement.getElementsByTagName("line").item(0).getTextContent());
                         String l = partElement.getElementsByTagName("line").item(0).getTextContent();
 
-                        Role rRole = new Role(n, lev, l);
+                        Role rRole = new Role(n, lev, l, true);
                         roles[j] = rRole;
 
                     }
