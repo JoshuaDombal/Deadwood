@@ -9,6 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+
+import javafx.scene.Scene;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
@@ -56,30 +58,7 @@ public class Deadwood {
             boolean moving = false;
             boolean inRole, inCO, mov, inTrl;
             inRole = inCO = mov = inTrl = false;
-
-            //display info about location and current role if applicable
-            displayTurnInfo(current);
-
-            //dispaly possible actions for the current player based on their location
-            //set booleans accordingly
-
-            System.out.println("Available actions: \n");
-            if(!(current.getRole() == (null))){
-                inRole = true;
-                System.out.println("    -Act\n");
-                System.out.println("    -Rehearse\n");
-            }else if(current.getRoom().getName().equals("office")){
-                inCO = true;
-                System.out.println("    -Move\n");
-                if(current.getRank() != 6){
-                    System.out.println("    -Upgrade\n");
-                }
-            }else if(current.getRoom().getName().equals("Trailer")){
-                inTrl = true;
-                System.out.println("    -Move\n");
-            }else{
-                System.out.println("    -Move\n");
-            }
+            boolean moveChoice = false;
 
             //initial variables for choice loop
             String choice;
@@ -87,14 +66,53 @@ public class Deadwood {
 
             while(choiceNotValid){
 
+                System.out.println("Available actions: \n");
+                if(!(current.getRole() == (null))){
+                    inRole = true;
+                    System.out.println("    -who\n");
+                    System.out.println("    -Where\n");
+                    System.out.println("    -Act\n");
+                    System.out.println("    -Rehearse\n");
+                    System.out.println("    -end\n");
+                }else if((current.getRoom().getName().equals("office")) && (!mov)){
+                    inCO = true;
+                    System.out.println("    -who\n");
+                    System.out.println("    -Where\n");
+                    System.out.println("    -move\n");
+                    if(current.getRank() != 6){
+                        System.out.println("    -upgrade\n");
+                    }
+                    System.out.println("    -end\n");
+                }else if((current.getRoom().getName().equals("Trailer")) && (!mov)){
+                    inTrl = true;
+                    System.out.println("    -who\n");
+                    System.out.println("    -Where\n");
+                    System.out.println("    -move\n");
+                    System.out.println("    -end\n");
+                }else if(!mov){
+                    System.out.println("    -who\n");
+                    System.out.println("    -Where\n");
+                    System.out.println("    -move\n");
+                    System.out.println("    -end\n");
+                }else if((getSet(current.getRoom().getName()).getScene()) != null) {
+                    System.out.println("    -who\n");
+                    System.out.println("    -Where\n");
+                    System.out.println("    -work\n");
+                    System.out.println("    -end\n");
+                }else{
+                    System.out.println("    -end\n");
+                }
+
                 //ask the current player for input
                 System.out.println(current.getName() + "'s turn: What would you like to do?\n");
 
                 //get and save player input
+                String command = console.next();
                 choice = console.nextLine();
 
                 //call act if player types 'Act'
-                if((choice.equals("Act")) &&(inRole)){
+                if((command.equals("Act")) &&(inRole)){
+                    moveChoice = true;
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
                     current.act(card, set);
@@ -105,7 +123,8 @@ public class Deadwood {
                     choiceNotValid = false;
 
                 //call rehearse if player types 'Rehearse'
-                }else if((choice.equals("Rehearse")) && (inRole)){
+                }else if((command.equals("Rehearse")) && (inRole)){
+                    moveChoice = true;
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
 
@@ -115,78 +134,66 @@ public class Deadwood {
                     }
 
                 //if player types 'Move'...
-                }else if((choice.equals("Move")) && (!inRole) && (!mov)){
-
-                    //set bool indicating that player is moving and choice is valid
-                    mov = true;
-                    choiceNotValid = false;
+                }else if((command.equals("move")) && (!inRole) && (!mov)){
 
                     //bool for location choice loop
                     boolean validLocation = false;
 
-                    //grab the nieghbors of the players current room
+
+                    System.out.println(choice);
+
+                    //grab the neighbors of the players current room
                     String[] adjacent = current.getRoom().getNeighbors();
 
-                    while(!validLocation){
+                    //check adjacent to see if the room they chose is a neighboring room
+                    for(int i = 0; i < adjacent.length; i++) {
 
-                        //get the players input for where they would like to move
-                        System.out.print("Where would you like to move? ");
-                        choice = console.nextLine();
+                        if (adjacent[i] == null) {
+                            break;
+                        }
 
-                        //check adjacent to see if the room they chose is a nieghboring room
-                        for(int i = 0; i < adjacent.length; i++){
+                        if (choice.contains(adjacent[i])) {
 
-                            if(adjacent[i] == null){
-                                break;
-                            }
+                            //set bool for location valid
+                            validLocation = true;
 
-                            //if their choice was valid...
-                            if(adjacent[i].equals(choice)){
+                            //set bool indicating that player is moving and choice is valid
+                            mov = true;
 
-                                //set bool for location valid
-                                validLocation = true;
+                            System.out.println("Successful move!\n");
 
-                                System.out.println("Successful move!\n");
-
-                                System.out.println("-----------------------------------------------------------------------\n");
-
-                                //set booleans to indicate if player is NOW in casting office or trialer
-                                if(choice.equals("office")){
-                                    inCO = true;
-                                }else if(choice.equals("trailer")){
-                                    inTrl = true;
-                                }else{
-                                    System.out.println("New Location Info:\n");
-                                }
-
-                                //update player room and rooms player
-                                current.updateRoom(getRoom(choice));
-
-
-                                //current.getRoom().addPlayer(current);
-
-                                System.out.print("\n");
-
-                                break;
-                            } else if (choice.equals("tooffice")) {
+                            //set booleans to indicate if player is NOW in casting office or trialer
+                            if (choice.contains("office")) {
                                 inCO = true;
-                                current.updateRoom(getRoom("office"));
-                                validLocation = true;
+                            } else if (choice.contains("trailer")) {
+                                inTrl = true;
                             }
-                        }
 
-                        //if the location is not valid, print error message and go through loop again
-                        if(!validLocation){
-                            System.out.println("Woops! You can't move to that room. Try again...\n");
-                        }
+                            //update player room and rooms player
+                            current.updateRoom(getRoom(adjacent[i]));
 
+                            System.out.print("\n");
+
+                        }else if(choice.contains("tooffice")){
+                            inCO = true;
+                            current.updateRoom(getRoom("office"));
+                            validLocation = true;
+                            mov = true;
+                            choiceNotValid = false;
+                        }
+                    }
+
+                    if(!validLocation){
+                        System.out.println("Error: Invalid location\n");
                     }
 
                 //if choice equals upgrade, call upgrade
-                }else if((choice.equals("Upgrade")) && (inCO)){
+                }else if((command.equals("upgrade")) && (inCO) && (!mov)){
+
+                    moveChoice = true;
 
                     if(current.getRank() != 6){
-                        if(current.upgrade()){
+                        if(current.upgrade(choice)){
                             System.out.println("Player successfully upgraded to rank " + current.getRank() + "!\n");
                             choiceNotValid = false;
                         }
@@ -196,155 +203,26 @@ public class Deadwood {
                     }
 
                     // Cheat code
-                } else if(choice.equals("tinkerbell")) {
+                } else if(command.equals("tinkerbell")) {
+
                     current.updateCash(99999);
                     current.updateCredits(99999);
-                }
 
-                //if the player is moving and they're not in the casting office or the trailer...
-                if((mov) && ((!current.getRoom().getName().equals("office")) && (!current.getRoom().getName().equals("trailer")))){
-
-
-                    //get the set and SceneCard of the player's new location
-                    Set set = getSet(choice);
-                    SceneCard card = set.getScene();
-
-                    //there is both a scene and a set
-                    if((set != null) && (card != null)){
-
-                        //get and save the roles from the set
-                        Role[] setRoles = set.getRoles();
-
-                        //Display name of the set and the scene cards within
-                        System.out.println(current.getRoom().getName() + ":\n");
-                        displaySceneCard(card);
-
-                        //flip the scene card if it needs to be done
-                        set.flipSceneCard();
-
-                        //display roles on the set and all pertinant info
-                        System.out.println("Roles on Set:\n");
-                        for(int i = 0; i < setRoles.length; i++){
-
-                            if(setRoles[i] == null){
-                                break;
-                            }
-
-
-                            System.out.println("Name: " + setRoles[i].getName());
-                            System.out.println("\n  -Line: \"" + setRoles[i].getLine() + "\"");
-                            System.out.println("  -Rank: " + setRoles[i].getRank());
-                            System.out.println("  -Budget: " + set.getScene().getBudget());
-                            System.out.println("  -Rehearsal Bonus: " + setRoles[i].getRehearseBonus());
-
-                            String status = "Open";
-                            if(setRoles[i].checkForPlayer()){
-                                status = "Taken";
-                            }
-
-                            System.out.println("  -Status: " + status + "\n");
-                        }
-
-                        //create bool for if they typed yes or no for wanting a role or not
-                        boolean roleChoiceValid = false;
-                        //create bool for is player wants role
-                        boolean wantRole = false;
-
-                        while(!roleChoiceValid){
-                            //get the palyers input for if they want to take a role
-                            System.out.print("Would you like to take a role? ('Yes' or 'No') ");
-                            choice = console.nextLine();
-
-                            //set wantRole to true if the player wants to take a role
-                            if(choice.equals("Yes")){
-                                wantRole = true;
-                                roleChoiceValid = true;
-                            }else if(!choice.equals("No")){
-                                System.out.println("Please input either 'Yes' or 'No'\n");
-                            }else{
-                                roleChoiceValid = true;
-                            }
-                        }
-                        if(wantRole){
-
-                            //if the player wants to take a role set bool for taking role loop
-                            boolean validRole = false;
-                            while(!validRole){
-
-                                //get and save player input for which role they would like to take
-                                System.out.println("What role would you like to take? (Input the name of the role you want exactly as you see it)");
-                                System.out.print("(or type 'done' if you do not want to take a role)  ");
-                                choice = console.nextLine();
-
-                                if(choice.equals("done")){
-                                    validRole = true;
-                                }else{
-
-                                    //look through the set roles to see if their choice was valid
-                                    for(int i = 0; i < setRoles.length; i++){
-
-                                        if(setRoles[i] == null){
-                                            break;
-                                        }
-
-                                        //if the role is in the set and it is not occupied, take role
-                                        if(setRoles[i].getName().equals(choice)){
-
-                                            if((!setRoles[i].checkForPlayer()) && (setRoles[i].getRank() <= current.getRank())){
-                                                System.out.println("Role taken successfully\n");
-                                                current.updateRole(setRoles[i]);
-                                                setRoles[i].addPlayer(current);
-                                                validRole = true;
-
-                                            //if the role is in the set but is occupied, print error and ask for input again via loop
-                                            }else if(!(setRoles[i].getRank() <= current.getRank())){
-                                                System.out.println("\nPlayer rank not high enough to take role\n");
-                                            }else{
-                                                System.out.println("\nRole already filled! Please choose again\n");
-                                            }
-                                        }
-                                    }
-
-                                    //grab and save roles from the SceneCard
-                                    Role[] cardRoles = set.getScene().getRoles();
-
-                                    //go through the roles on the scene card to check if player choice is valid
-                                    for(int i = 0; i < cardRoles.length; i++){
-
-                                        if(cardRoles[i] == null){
-                                            break;
-                                        }
-
-                                        //if the role is in the set and it is not occupied, take role
-                                        if(cardRoles[i].getName().equals(choice)){
-
-                                            if((!cardRoles[i].checkForPlayer()) && (cardRoles[i].getRank() <= current.getRank())){
-                                                System.out.println("Role taken successfully\n");
-                                                set.getScene().occupiedStatus(true);
-                                                current.updateRole(cardRoles[i]);
-                                                cardRoles[i].addPlayer(current);
-                                                validRole = true;
-                                            }else if(!(cardRoles[i].getRank() <= current.getRank())){
-                                                System.out.println("\nPlayer rank not high enough to take role\n");
-                                            }else{
-                                                System.out.println("\nRole already filled! Please choose again\n");
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if(!validRole){
-                                    System.out.println("Woops! Invalid role! Please try again.\n");
-                                }
-
-                            }
-
-                        }
+                }else if(command.equals("who")){
+                    who(current);
+                }else if(command.equals("Where")){
+                    where(current);
+                }else if((command.equals("work")) && (! ((inTrl) && (inCO)))){
+                    if(work(current, choice)){
+                        moveChoice = true;
+                        choiceNotValid = false;
                     }
+                }else if(command.equals("end")){
+                    choiceNotValid = false;
                 }
 
                 //if the choice is not valid print an error and ask them to try again
-                if(choiceNotValid){
+                if((choiceNotValid) && (moveChoice) && (!mov)){
                     System.out.println("Woops! Please type a valid choice for your turn\n");
                 }
 
@@ -355,6 +233,177 @@ public class Deadwood {
             System.out.println("\n------------------------------------------------------------------------\n");
 
         }
+
+    }
+
+    private static boolean work(Player current, String choice){
+
+        boolean validRole = false;
+
+        Room currentRoom = current.getRoom();
+
+        Set set = getSet(currentRoom.getName());
+
+        SceneCard scene = set.getScene();
+
+        if(scene == null){
+            System.out.println("Scene card is no longer in play\n");
+        }else{
+
+            Role[] setRoles = set.getRoles();
+
+            //look through the set roles to see if their choice was valid
+            for(int i = 0; i < setRoles.length; i++){
+
+                if(setRoles[i] == null){
+                    break;
+                }
+
+                //if the role is in the set and it is not occupied, take role
+                if(choice.contains(setRoles[i].getName())){
+
+                    if((!setRoles[i].checkForPlayer()) && (setRoles[i].getRank() <= current.getRank())){
+                        System.out.println("Role taken successfully\n");
+                        current.updateRole(setRoles[i]);
+                        setRoles[i].addPlayer(current);
+                        validRole = true;
+
+                        //if the role is in the set but is occupied, print error and ask for input again via loop
+                    }else if(!(setRoles[i].getRank() <= current.getRank())){
+                        System.out.println("\nPlayer rank not high enough to take role\n");
+                    }else{
+                        System.out.println("\nRole already filled! Please choose again\n");
+                    }
+                }
+            }
+
+            //grab and save roles from the SceneCard
+            Role[] cardRoles = scene.getRoles();
+
+            //go through the roles on the scene card to check if player choice is valid
+            for(int i = 0; i < cardRoles.length; i++){
+
+                if(cardRoles[i] == null){
+                    break;
+                }
+
+                //if the role is in the set and it is not occupied, take role
+                if(choice.equals(cardRoles[i].getName())){
+
+                    if((!cardRoles[i].checkForPlayer()) && (cardRoles[i].getRank() <= current.getRank())){
+                        System.out.println("Role taken successfully\n");
+                        set.getScene().occupiedStatus(true);
+                        current.updateRole(cardRoles[i]);
+                        cardRoles[i].addPlayer(current);
+                        validRole = true;
+                    }else if(!(cardRoles[i].getRank() <= current.getRank())){
+                        System.out.println("\nPlayer rank not high enough to take role\n");
+                    }else{
+                        System.out.println("\nRole already filled! Please choose again\n");
+                    }
+                }
+            }
+        }
+
+
+        if(!validRole){
+            System.out.println("Invalid role! Please try again.\n");
+        }
+
+
+        return validRole;
+
+    }
+
+    private static void where(Player currentPlayer){
+
+        Room currentRoom = currentPlayer.getRoom();
+
+        //if the player is in the casting office display the upgrade menu and the adjacent rooms
+        if(currentRoom.getName().equals("office")){
+
+            System.out.println("Casting Office:\n");
+
+            displayAdjacentRooms(currentRoom);
+
+            CastingOffice.displayUpgradeOptions();
+
+            //if the player is in the trailer display the adjacent rooms
+        }else if(currentRoom.getName().equals("trailer")){
+            System.out.println("Trailer:\n");
+            displayAdjacentRooms(currentRoom);
+
+        }else{
+            Set set = getSet(currentRoom.getName());
+
+            System.out.println(currentRoom.getName() + ":\n");
+
+            if(set.getScene() != null){
+                displaySceneCard(set.getScene());
+            }
+
+            Role[] setRoles = set.getRoles();
+
+            for(int i = 0; i < setRoles.length; i++){
+
+                if(setRoles[i] == null){
+                    break;
+                }
+
+                System.out.println("Roles in Set:\n");
+
+                System.out.println("Name: " + setRoles[i].getName());
+                System.out.println("\n  -Line: \"" + setRoles[i].getLine() + "\"");
+                System.out.println("  -Rank: " + setRoles[i].getRank());
+                System.out.println("  -Budget: " + set.getScene().getBudget());
+                System.out.println("  -Rehearsal Bonus: " + setRoles[i].getRehearseBonus());
+
+                String status = "Open";
+                if(setRoles[i].checkForPlayer()){
+                    status = "Taken";
+                }
+
+                System.out.println("  -Status: " + status + "\n");
+            }
+
+            displayAdjacentRooms(currentRoom);
+        }
+
+        System.out.println("");
+    }
+
+    private static void who(Player currentPlayer) {
+
+        //get the room the player is currently in
+        Room currentRoom = currentPlayer.getRoom();
+
+        //print the player's info
+        System.out.println(currentPlayer.getName() + "'s turn:\n");
+        System.out.println("    -Money: " + currentPlayer.getCash());
+        System.out.println("    -Credits: " + currentPlayer.getCredits());
+        System.out.println("    -rank: " + currentPlayer.getRank() + "\n");
+
+        if (currentPlayer.getRole() != null) {
+            Role role = currentPlayer.getRole();
+            Set set = getSet(currentRoom.getName());
+            System.out.println("Current Role:\n");
+            System.out.println("    " + role.getName());
+            System.out.println("    \"" + role.getLine() + "\"\n");
+            System.out.println("    -Rank: " + role.getRank());
+            System.out.println("    -Budget: " + set.getScene().getBudget());
+
+            System.out.println("    -Rehearsal Bonus: " + role.getRehearseBonus() + "\n");
+            System.out.println("    -Number of Shots Remaining: " + set.getNumTokens() + "\n");
+
+            if (role.checkOnCard()) {
+                System.out.println("    -Role Status: On card");
+
+            } else {
+                System.out.println("    -Role Status: Off card");
+            }
+        }
+
+        System.out.println("\n\n\n");
 
     }
 
@@ -395,6 +444,8 @@ public class Deadwood {
 
         daysRemaining--;
         scenesRemaining = 10;
+
+        drawSceneCards();
 
         if(daysRemaining > 0){
             System.out.println("\n\n\n\n\n\n\n ***********STARTING NEW DAY**********\n\n\n\n\n\n\n\n");
@@ -621,65 +672,6 @@ public class Deadwood {
         scenesRemaining--;
     }
 
-    //print the info for each players turn
-    private static void displayTurnInfo(Player currentPlayer) {
-
-        //get the room the player is currently in
-        Room currentRoom = currentPlayer.getRoom();
-
-        //print the player's info
-        System.out.println(currentPlayer.getName() + "'s turn:\n");
-        System.out.println("    -Money: " + currentPlayer.getCash());
-        System.out.println("    -Credits: " + currentPlayer.getCredits());
-        System.out.println("    -rank: " + currentPlayer.getRank() + "\n");
-        System.out.println("-----------------------------------------------------------------------------------------\n");
-        System.out.println("Room: " + currentRoom.getName() + "\n");
-
-        //if the player is in the casting office display the upgrade menu and the adjacent rooms
-        if(currentRoom.getName().equals("office")){
-
-            displayAdjacentRooms(currentRoom);
-
-            CastingOffice.displayUpgradeOptions();
-
-        //if the player is in the trailer display the adjacent rooms
-        }else if(currentRoom.getName().equals("trailer")){
-
-            displayAdjacentRooms(currentRoom);
-
-        //if the player is in a role display the info about the role they're in
-        }else if(currentPlayer.getRole() != null){
-            Role role = currentPlayer.getRole();
-            Set set = getSet(currentRoom.getName());
-            System.out.println("Current Role:\n");
-            System.out.println("    " + role.getName());
-            System.out.println("    \"" + role.getLine() + "\"\n");
-            System.out.println("    -Rank: " + role.getRank());
-            System.out.println("    -Budget: " + set.getScene().getBudget());
-
-            System.out.println("    -Rehearsal Bonus: " + role.getRehearseBonus() + "\n");
-            System.out.println("    -Number of Shots Remaining: " + set.getNumTokens() + "\n");
-            if (role.checkOnCard()) {
-                System.out.println("    -Role Status: On card");
-            } else {
-                System.out.println("    -Role Status: Off card");
-            }
-
-
-        //otherwise the player must be in a set. In which case display the scene card and adjacent rooms
-        }else{
-
-            Set set = getSet(currentRoom.getName());
-
-            if(set.getScene() != null){
-                displaySceneCard(set.getScene());
-            }
-
-            displayAdjacentRooms(currentRoom);
-        }
-
-        System.out.println("");
-    }
 
     //takes a room object as an argument and displays it's adjacent rooms
     private static void displayAdjacentRooms(Room room){
