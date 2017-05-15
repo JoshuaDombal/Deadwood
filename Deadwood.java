@@ -21,7 +21,7 @@ import org.xml.sax.SAXParseException;
 public class Deadwood {
     //bools for the loops in main and play game
     private static int daysRemaining = 4;
-    private static int scenesRemaining = 2;
+    private static int scenesRemaining = 10;
     //initialized to 1 for print statements in start game, exectly represents number of players
     private static int numPlayers = 1;
     //bool is true when players start game and when they day they would like to play again
@@ -81,7 +81,7 @@ public class Deadwood {
                 System.out.println("    -Move\n");
             }
 
-            //initiale variables for choice loop
+            //initial variables for choice loop
             String choice;
             boolean choiceNotValid = true;
 
@@ -505,7 +505,7 @@ public class Deadwood {
 
         //if there are 2-3 players, set daysRemaining to 3
         if(numPlayers <= 3){
-            daysRemaining = 1;
+            daysRemaining = 3;
         }
 
         //get a reference to the trailer room
