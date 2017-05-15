@@ -21,6 +21,7 @@ public class Player {
     // Constructor
     public Player (String name){
         this.name = name;
+        this.rank = 1;
     }
 
     public boolean rehearse(SceneCard card) {
@@ -30,11 +31,11 @@ public class Player {
         int budget = card.getBudget();
         int rehearseCounter = role.getRehearseBonus();
 
-        if((rehearseCounter - 2) <= budget){
+        if(rehearseCounter <= (budget - 2)){
             role.incrementRehearse();
             success = true;
             System.out.println("Successfully rehearsed your part!\n");
-        }else if((rehearseCounter - 1) <= budget){
+        }else{
             System.out.println("You've already rehearsed enough to master the role! (Guaranteed successful act)\n");
         }
 
@@ -62,13 +63,14 @@ public class Player {
             //int payChoice = Integer.parseInt(paymentChoice);
 
 
-            if(rankChoice == 2){
+            if((rankChoice == 2) && (rank < 2)){
                 if ((paymentChoice.equals("cash")) && (cash >= 4)) {
                     cash = cash - 4;
                     rank = 2;
                 } else if ((paymentChoice.equals("credits")) && (credits >= 5)) {
                     credits = credits - 5;
                 } else {
+                    System.out.println("Insufficient Funds!\n");
                     return false;
                 }
 
@@ -81,6 +83,7 @@ public class Player {
                     credits = credits - 10;
                     rank = 3;
                 } else {
+                    System.out.println("Insufficient Funds!\n");
                     return false;
                 }
 
@@ -93,6 +96,7 @@ public class Player {
                     credits = credits - 15;
                     rank = 4;
                 } else {
+                    System.out.println("Insufficient Funds!\n");
                     return false;
                 }
 
@@ -105,6 +109,7 @@ public class Player {
                     credits = credits - 20;
                     rank = 5;
                 } else {
+                    System.out.println("Insufficient Funds!\n");
                     return false;
                 }
 
@@ -117,9 +122,21 @@ public class Player {
                     credits = credits - 25;
                     rank = 6;
                 } else {
+                    System.out.println("Insufficient Funds!\n");
                     return false;
                 }
 
+            }else if(rankChoice > 6){
+                System.out.println("Unable to upgrade rank over rank 6\n");
+                return false;
+            }else{
+                if(rank == rankChoice){
+                    System.out.println("Already at rank " + rankChoice + "!\n");
+                }else{
+                    System.out.println("Unable to downgrade rank\n");
+                }
+
+                return false;
             }
         }
 

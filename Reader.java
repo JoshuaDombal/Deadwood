@@ -65,14 +65,12 @@ public class Reader{
 
 
             NodeList neiList = oElement.getElementsByTagName("neighbor");
-            //System.out.println(nList.getLength());
+
             for (int j = 0; j < neiList.getLength(); j++) {
                 Node neNode = neiList.item(j);
                 Element neElement = (Element) neNode;
 
                 officeNeighbors[j] = neElement.getAttribute("name");
-
-                System.out.println("OFFICE Neighbor: " + neElement.getAttribute("name"));
             }
 
             co = new Room(oName, officeNeighbors);
@@ -133,7 +131,8 @@ public class Reader{
                 String setName;
                 int nShots = 0;
                 int nRoles = 0;
-                Role[] roles = new Role[4];
+                Role[] roles = new Role[5];
+                roles[4] = null;
 
                 String[] neighbors = new String[4];
 

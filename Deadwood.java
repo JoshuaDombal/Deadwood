@@ -46,8 +46,6 @@ public class Deadwood {
 
         while(scenesRemaining > 1){
 
-            System.out.println("scenesRemaining: " + scenesRemaining);
-
             //pop player from queue
             Player current = players.remove();
 
@@ -73,7 +71,9 @@ public class Deadwood {
             }else if(current.getRoom().getName().equals("office")){
                 inCO = true;
                 System.out.println("    -Move\n");
-                System.out.println("    -Upgrade\n");
+                if(current.getRank() != 6){
+                    System.out.println("    -Upgrade\n");
+                }
             }else if(current.getRoom().getName().equals("Trailer")){
                 inTrl = true;
                 System.out.println("    -Move\n");
@@ -185,8 +185,14 @@ public class Deadwood {
                 //if choice equals upgrade, call upgrade
                 }else if((choice.equals("Upgrade")) && (inCO)){
 
-                    if(current.upgrade()){
-                        choiceNotValid = false;
+                    if(current.getRank() != 6){
+                        if(current.upgrade()){
+                            System.out.println("Player successfully upgraded to rank " + current.getRank() + "!\n");
+                            choiceNotValid = false;
+                        }
+
+                    }else{
+                        System.out.println("\nCannot upgrade: Player already at max rank\n");
                     }
 
                     // Cheat code
@@ -229,7 +235,7 @@ public class Deadwood {
                             System.out.println("\n  -Line: \"" + setRoles[i].getLine() + "\"");
                             System.out.println("  -Rank: " + setRoles[i].getRank());
                             System.out.println("  -Budget: " + set.getScene().getBudget());
-                            System.out.println("  -Rehearsal Bonus: " + setRoles[i].getRehearseBonus() + "\n");
+                            System.out.println("  -Rehearsal Bonus: " + setRoles[i].getRehearseBonus());
 
                             String status = "Open";
                             if(setRoles[i].checkForPlayer()){
@@ -314,6 +320,7 @@ public class Deadwood {
 
                                             if((!cardRoles[i].checkForPlayer()) && (cardRoles[i].getRank() <= current.getRank())){
                                                 System.out.println("Role taken successfully\n");
+                                                set.getScene().occupiedStatus(true);
                                                 current.updateRole(cardRoles[i]);
                                                 cardRoles[i].addPlayer(current);
                                                 validRole = true;
@@ -385,15 +392,23 @@ public class Deadwood {
     //decrements the number of days left and reset the number of scenesRemaining
     //move all player back to the trailer
     private static void startDay() {
+
         daysRemaining--;
         scenesRemaining = 10;
 
-        Room trailer = getRoom("trailer");
+        if(daysRemaining > 0){
+            System.out.println("\n\n\n\n\n\n\n ***********STARTING NEW DAY**********\n\n\n\n\n\n\n\n");
 
-        for(int i = 0; i < numPlayers; i++){
-            Player current = players.remove();
-            current.updateRoom(trailer);
+            Room trailer = getRoom("trailer");
+
+            for(int i = 0; i < numPlayers; i++){
+                Player current = players.remove();
+                current.updateRoom(trailer);
+                current.updateRole(null);
+            }
         }
+
+
     }
 
     //draws new sceneCards from the arrayList and RANDOMLY assigns them to sets
@@ -431,10 +446,6 @@ public class Deadwood {
 
         rooms = Reader.getRooms();
         sets = Reader.getSets();
-
-
-
-
 
         drawSceneCards();
 
@@ -494,7 +505,7 @@ public class Deadwood {
 
         //if there are 2-3 players, set daysRemaining to 3
         if(numPlayers <= 3){
-            daysRemaining = 3;
+            daysRemaining = 1;
         }
 
         //get a reference to the trailer room
@@ -511,7 +522,7 @@ public class Deadwood {
             }else if(numPlayers == 6){
                 current.updateCredits(4);
                 current.updateRoom(trailer);
-            }else if(numPlayers <= 8){
+            }else if((numPlayers == 8) || (numPlayers == 7)){
                 current.updateRank(2);
                 current.updateRoom(trailer);
             }else{
@@ -527,7 +538,7 @@ public class Deadwood {
 
         //initialize varibales for each players final score, winner score, and the names of the winner(s)
         int winnerScore = 0;
-        String[] winnerNames = null;
+        String[] winnerNames = new String[8];
         int finalScore = 0;
 
         int index = 0;
@@ -584,13 +595,25 @@ public class Deadwood {
 
         //ask the player if they would like to play again
         Scanner console = new Scanner(System.in);
-        System.out.println("Game over!");
-        System.out.print("Would you like to play again? ('Yes' or 'No')");
+        System.out.println("Game over!\n");
 
-        //if they would not like to play again they type 'No' and the wantToPlay boolean is set accordingly
-        if(console.nextLine().equals("No")){
-            wantToPlay = false;
+        boolean inValid = false;
+
+        while(!inValid){
+            System.out.print("Would you like to play again? ('Yes' or 'No')");
+
+            //if they would not like to play again they type 'No' and the wantToPlay boolean is set accordingly
+            if(console.nextLine().equals("No")){
+                wantToPlay = false;
+                inValid = true;
+            }else if(console.nextLine().equals("Yes")){
+                wantToPlay = true;
+                inValid = true;
+            }else{
+                System.out.println("Invalid input\n");
+            }
         }
+
     }
 
     //decrements the number of scenes remaining by 1
@@ -617,18 +640,7 @@ public class Deadwood {
 
             displayAdjacentRooms(currentRoom);
 
-            System.out.println("----Rank----Dollars----Credits----");
-            System.out.println("----------------------------------");
-            System.out.println("|    2        4           5      |");
-            System.out.println("----------------------------------");
-            System.out.println("|    3        10          10     |");
-            System.out.println("----------------------------------");
-            System.out.println("|    4        18          15     |");
-            System.out.println("----------------------------------");
-            System.out.println("|    5        28          20     |");
-            System.out.println("----------------------------------");
-            System.out.println("|    6        40          25     |");
-            System.out.println("----------------------------------\n");
+            CastingOffice.displayUpgradeOptions();
 
         //if the player is in the trailer display the adjacent rooms
         }else if(currentRoom.getName().equals("trailer")){
