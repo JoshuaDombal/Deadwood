@@ -1,24 +1,7 @@
 import java.util.*;
-import java.io.*;
 import java.util.Scanner;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.*;
-import java.lang.Math.*;
 import java.util.concurrent.ThreadLocalRandom;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-
-import javafx.scene.Scene;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import java.io.File;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 
 public class Deadwood {
     //bools for the loops in main and play game
@@ -212,14 +195,19 @@ public class Deadwood {
                 }else if(command.equals("who")){
                     View.who(current);
 
-                //call
+                //call Where if the player types where
                 }else if(command.equals("Where")){
                     View.where(current);
+
+                //call work when the player types work and is on a set
                 }else if((command.equals("work")) && (! ((inTrl) && (inCO)))){
+                    //check if the play successfully took the role
                     if(work(current, choice)){
                         moveChoice = true;
                         choiceNotValid = false;
                     }
+
+                //skip the current players turn if they type end
                 }else if(command.equals("end")){
                     choiceNotValid = false;
                 }
@@ -243,12 +231,12 @@ public class Deadwood {
 
         boolean validRole = false;
 
+        //grab the Room, Scene, Set
         Room currentRoom = current.getRoom();
-
         Set set = getSet(currentRoom.getName());
-
         SceneCard scene = set.getScene();
 
+        //check if the scene is null
         if(scene == null){
             System.out.println("Scene card is no longer in play\n");
         }else{
@@ -265,6 +253,7 @@ public class Deadwood {
                 //if the role is in the set and it is not occupied, take role
                 if(choice.contains(setRoles[i].getName())){
 
+                    //if the role is unoccupied take the role
                     if((!setRoles[i].checkForPlayer()) && (setRoles[i].getRank() <= current.getRank())){
                         System.out.println("Role taken successfully\n");
                         current.updateRole(setRoles[i]);
@@ -418,23 +407,40 @@ public class Deadwood {
         //bool for info getting loop
         boolean playInfoNotDone = true;
 
+        boolean numProvided = false;
+
+        if(numPlayers > 1){
+            numProvided = true;
+        }
+
+        int numNames = 1;
+
         //while the program has not gotten all of the info from the player
         while(playInfoNotDone){
 
             //ask the player to type in a player name
-            System.out.println("Please enter the name of player " + numPlayers  + " (Type 'done' when you have finished entering player names)");
+            System.out.println("Please enter the name of player " + numNames  + " (Type 'done' when you have finished entering player names, ONLY IF YOU HAVE NOT ALREADY INPUT NUMBER OF PLAYERS)");
             String givenName = console.nextLine();
+            numNames++;
+
+            if(numProvided){
+                Player player = new Player(givenName);
+                players.add(player);
+                if(numNames == numPlayers){
+                    System.out.println("All player names entered\n");
+                    playInfoNotDone = false;
+                }
 
             //if they type 'done', check and make sure there are at least two players
-            if(givenName.equals("done")){
-                if(numPlayers < 3){
+            }else if((givenName.equals("done")) && (!numProvided)){
+                if(numNames < 3){
                     System.out.println("Error: Not enough players");
                 }else{
                     playInfoNotDone = false;
                 }
 
             //if the user did not input 'done', create a player object with that name and add it to the PlayerQueue
-            }else{
+            }else if(!numProvided){
                 Player player = new Player(givenName);
                 players.add(player);
                 numPlayers++;
@@ -570,6 +576,25 @@ public class Deadwood {
     }
 
     public static void main(String[] args) {
+
+        int arg = 0;
+
+        if(args.length != 0){
+            try{
+                arg = Integer.valueOf(args[0]);
+            }catch(NumberFormatException e){}
+        }
+
+
+        if (arg != 0) {
+
+            numPlayers = Integer.valueOf(arg) + 1;
+            if(!((numPlayers <= 8) && (numPlayers >= 2))){
+                System.out.println("Invalid number of players\n");
+                return;
+            }
+
+        }
 
         while(wantToPlay){
             startGame();
