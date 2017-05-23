@@ -6,13 +6,16 @@ public class Set extends Room {
     private boolean sceneFaceUp = false;
 
     private Role[] roles;
+    private int[] area;
+    private Take[] takes;
 
-    public Set(String name, int shotTokens, int numRoles, Role[] roles, String[] neighbors){
+    public Set(String name, int shotTokens, int numRoles, Role[] roles, String[] neighbors, int[] area, Take[] takes){
         super(name, neighbors);
         this.scene = scene;
         this.roles = roles;
         this.shotTokens = shotTokens;
         this.shots = shotTokens;
+        this.area = area;
     }
 
     public void addScene(SceneCard scene) {
@@ -25,6 +28,8 @@ public class Set extends Room {
 
     public void endScene(Player player) {
 
+        System.out.println("\n*********Scene Ended!*********\n");
+
         // check for players on card
         if (scene.occupiedStatus()) {
             scene.bonusPayout();
@@ -33,9 +38,10 @@ public class Set extends Room {
 
         }
 
+        Role[] cardRoles = scene.getRoles();
         scene = null;
 
-        // Removes role from each player
+        // Removes role from each player on set
         int i = 0;
         while (i < roles.length) {
             if (roles[i] != null) {
@@ -48,15 +54,10 @@ public class Set extends Room {
 
         }
 
-        roles = null;
-
         Deadwood.decrementScene();
 
     }
 
-    public void clearRoles() {
-        roles = null;
-    }
 
     public void removeShotToken() {
         shotTokens--;
@@ -69,6 +70,7 @@ public class Set extends Room {
             if (roles[i].checkForPlayer()) {
                 int payout = roles[i].getRank();
                 roles[i].getPlayer().updateCash(payout);
+                System.out.println(roles[i].getPlayer().getName() + "was awarded " + payout + " dollars in cash as a bonus for being an extra!\n");
             }
             i++;
         }

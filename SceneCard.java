@@ -51,7 +51,7 @@ public class SceneCard {
                     roles[i].getPlayer().updateCash(bonus[i]);
 
 
-                    System.out.println(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " as a bonus!");
+                    System.out.println(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
 
                     // Removes role from Player class
                     roles[i].getPlayer().removeRole();
@@ -60,7 +60,6 @@ public class SceneCard {
                 }
             }
 
-            //roles[i].getPlayer().removeRole();
         }
 
     }

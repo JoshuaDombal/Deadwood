@@ -39,8 +39,6 @@ public class Reader{
             sets = new ArrayList<Set>();
             rooms = new ArrayList<Room>();
 
-
-
             NodeList list = doc1.getElementsByTagName("board");
             Node bNode = list.item(0);
             Element el = (Element) bNode;
@@ -65,25 +63,16 @@ public class Reader{
 
 
             NodeList neiList = oElement.getElementsByTagName("neighbor");
-            //System.out.println(nList.getLength());
+
             for (int j = 0; j < neiList.getLength(); j++) {
                 Node neNode = neiList.item(j);
                 Element neElement = (Element) neNode;
 
                 officeNeighbors[j] = neElement.getAttribute("name");
-
-                System.out.println("OFFICE Neighbor: " + neElement.getAttribute("name"));
             }
 
             co = new Room(oName, officeNeighbors);
             rooms.add(co);
-
-
-
-
-
-
-
 
 
 
@@ -127,24 +116,49 @@ public class Reader{
             for (int i = 0; i < setList.getLength(); i++) {
 
                 Set set;
-
                 Room room;
+                Take[] takes = new Take[3];
+                int p = 0;
 
                 String setName;
                 int nShots = 0;
                 int nRoles = 0;
-                Role[] roles = new Role[4];
+                Role[] roles = new Role[5];
+                roles[4] = null;
+
+                int[] sArea;
+                int sx;
+                int sy;
+                int sh;
+                int sw;
 
                 String[] neighbors = new String[4];
-
-
-
 
                 Node setNode = setList.item(i);
                 Element setElement = (Element) setNode;
 
+                NodeList sAreaList = setElement.getElementsByTagName("area");
+                Node sAreaNode = sAreaList.item(0);
+                Element sAreaElement = (Element) sAreaNode;
+
+                sx = Integer.parseInt(sAreaElement.getAttribute("x"));
+                sy = Integer.parseInt(sAreaElement.getAttribute("y"));
+                sh = Integer.parseInt(sAreaElement.getAttribute("h"));
+                sw = Integer.parseInt(sAreaElement.getAttribute("w"));
+
+                //System.out.println("PART AREA x : " + sAreaElement.getAttribute("x"));
+                //System.out.println("PART AREA y : " + sAreaElement.getAttribute("y"));
+                //System.out.println("PART AREA h : " + sAreaElement.getAttribute("h"));
+                //System.out.println("PART AREA w : " + sAreaElement.getAttribute("w"));
+
+                sArea = new int[] {sx, sy, sh, sw};
+
+
+
                 //System.out.println("Set name: " + setElement.getAttribute("name"));
                 setName = setElement.getAttribute("name");
+
+
 
                 //GET NEIGHBORS
                 NodeList neighborList = setElement.getElementsByTagName("neighbor");
@@ -157,6 +171,41 @@ public class Reader{
                     //System.out.println("Neighbor: " + neighborElement.getAttribute("name"));
                 }
 
+
+                NodeList takeList = setElement.getElementsByTagName("take");
+                for (int j = 0; j < takeList.getLength(); j++) {
+                    Node takeNode = takeList.item(j);
+                    Element takeElement = (Element) takeNode;
+
+                    Take take;
+
+                    int takeNum;
+                    int tx;
+                    int ty;
+                    int th;
+                    int tw;
+
+                    takeNum = Integer.parseInt(takeElement.getAttribute("number"));
+
+                    NodeList aList = takeElement.getElementsByTagName("area");
+                    Node aNode = aList.item(0);
+                    Element aElement = (Element) aNode;
+
+                    tx = Integer.parseInt(aElement.getAttribute("x"));
+                    ty = Integer.parseInt(aElement.getAttribute("y"));
+                    th = Integer.parseInt(aElement.getAttribute("h"));
+                    tw = Integer.parseInt(aElement.getAttribute("w"));
+
+                    System.out.println("PART AREA x : " + aElement.getAttribute("x"));
+                    System.out.println("PART AREA y : " + aElement.getAttribute("y"));
+                    System.out.println("PART AREA h : " + aElement.getAttribute("h"));
+                    System.out.println("PART AREA w : " + aElement.getAttribute("w"));
+
+                    take = new Take(takeNum, tx, ty, th, tw);
+                    takes[p] = take;
+                    p++;
+                }
+
                 // Gets roles
                 NodeList partList = setElement.getElementsByTagName("part");
                 for (int j = 0; j < partList.getLength(); j++) {
@@ -165,8 +214,30 @@ public class Reader{
                     int roleRank;
                     String line;
 
+                    int[] rArea;
+                    int rx;
+                    int ry;
+                    int rh;
+                    int rw;
+
                     Node partNode = partList.item(j);
                     Element partElement = (Element) partNode;
+
+                    NodeList areaLi = partElement.getElementsByTagName("area");
+                    Node areaNo = areaLi.item(0);
+                    Element areaEl = (Element) areaNo;
+
+                    rx = Integer.parseInt(areaEl.getAttribute("x"));
+                    ry = Integer.parseInt(areaEl.getAttribute("y"));
+                    rh = Integer.parseInt(areaEl.getAttribute("h"));
+                    rw = Integer.parseInt(areaEl.getAttribute("w"));
+
+                    //System.out.println("PART AREA x : " + areaEl.getAttribute("x"));
+                    //System.out.println("PART AREA y : " + areaEl.getAttribute("y"));
+                    //System.out.println("PART AREA h : " + areaEl.getAttribute("h"));
+                    //System.out.println("PART AREA w : " + areaEl.getAttribute("w"));
+
+                    rArea = new int[] {rx, ry, rh, rw};
 
                     //System.out.println("Role name: " + partElement.getAttribute("name"));
                     roleName = partElement.getAttribute("name");
@@ -177,21 +248,17 @@ public class Reader{
                     //System.out.println("Role line: " + partElement.getElementsByTagName("line").item(0).getTextContent());
                     line = partElement.getElementsByTagName("line").item(0).getTextContent();
 
-                    role = new Role(roleName, roleRank, line, false);
+                    role = new Role(roleName, roleRank, line, false, rArea);
                     roles[j] = role;
                     nRoles++;
-                }
 
-                NodeList takeList = setElement.getElementsByTagName("take");
-                for (int j = 0; j < takeList.getLength(); j++) {
-                    Node takeNode = takeList.item(j);
-                    Element takeElement = (Element) takeNode;
+
 
                     ////System.out.println("Take Number: " + takeElement.getAttribute("number"));
                     nShots++;
                 }
 
-                set = new Set(setName, nShots, nRoles, roles, neighbors);
+                set = new Set(setName, nShots, nRoles, roles, neighbors, sArea, takes);
                 room = new Room(setName, neighbors);
 
                 sets.add(set);
@@ -229,14 +296,15 @@ public class Reader{
             sceneCards = new ArrayList<SceneCard>();
 
 
-
+            // for each card
             for (int i = 0; i < cardList.getLength(); i++) {
                 Node nNode = cardList.item(i);
                 SceneCard card;
 
                 String name;
-                int b;
+                int budget;
                 int sceneNum;
+                String cardImage;
 
 
                 // Change this 3!!!!!!!!!!!!!!!
@@ -249,19 +317,29 @@ public class Reader{
                     ////System.out.println("Card Name : " + cardElement.getAttribute("name"));
                     name = cardElement.getAttribute("name");
 
-                    b = Integer.parseInt(cardElement.getAttribute("budget"));
+                    budget = Integer.parseInt(cardElement.getAttribute("budget"));
+
+                    cardImage = cardElement.getAttribute("img");
 
                     NodeList numNode = cardElement.getElementsByTagName("scene");
                     Node eNode = numNode.item(0);
                     Element e = (Element) eNode;
-                    //System.out.println("Scene Num : " + e.getAttribute("number"));
+                    //System.out.println("IMG : " + cardElement.getAttribute("img"));
 
                     sceneNum = Integer.parseInt(e.getAttribute("number"));
 
 
                     NodeList partList = cardElement.getElementsByTagName("part");
 
+                    // for each role
                     for (int j = 0; j < partList.getLength(); j++) {
+                        int[] area;
+
+                        int x;
+                        int y;
+                        int h;
+                        int w;
+
                         Node pNode = partList.item(j);
                         Element partElement = (Element) pNode;
                         //System.out.println("Role Name : " + partElement.getAttribute("name"));
@@ -270,14 +348,32 @@ public class Reader{
                         //System.out.println("Role Level : " + partElement.getAttribute("level"));
                         int lev = Integer.parseInt(partElement.getAttribute("level"));
 
+                        NodeList areaList = partElement.getElementsByTagName("area");
+                        Node areaNode = areaList.item(0);
+
+                        Element areaElement = (Element) areaNode;
+
+                        x = Integer.parseInt(areaElement.getAttribute("x"));
+                        y = Integer.parseInt(areaElement.getAttribute("y"));
+                        h = Integer.parseInt(areaElement.getAttribute("h"));
+                        w = Integer.parseInt(areaElement.getAttribute("w"));
+
+                        area = new int[] {x, y, h, w};
+                        //System.out.println("PART AREA x : " + areaElement.getAttribute("x"));
+                        //System.out.println("PART AREA y : " + areaElement.getAttribute("y"));
+                        //System.out.println("PART AREA h : " + areaElement.getAttribute("h"));
+                        //System.out.println("PART AREA w : " + areaElement.getAttribute("w"));
+
+
+
                         //System.out.println("Role Line : " + partElement.getElementsByTagName("line").item(0).getTextContent());
                         String l = partElement.getElementsByTagName("line").item(0).getTextContent();
 
-                        Role rRole = new Role(n, lev, l, true);
+                        Role rRole = new Role(n, lev, l, true, area);
                         roles[j] = rRole;
 
                     }
-                    card = new SceneCard(name, 3, b, roles, sceneNum);
+                    card = new SceneCard(name, 3, budget, roles, sceneNum);
                     sceneCards.add(card);
                 }
 
