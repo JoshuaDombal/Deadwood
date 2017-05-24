@@ -5,9 +5,18 @@ import java.util.concurrent.ThreadLocalRandom;
 
 //View
 import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import java.awt.event.*;
+import javax.swing.*;
 import java.awt.Dimension;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.Component;
+import javax.swing.SwingConstants;
+import javax.imageio.ImageIO;
+import java.io.File;
+import javax.swing.ImageIcon;
+
 
 public class Deadwood {
     //bools for the loops in main and play game
@@ -17,6 +26,7 @@ public class Deadwood {
     private static int numPlayers = 1;
     //bool is true when players start game and when they day they would like to play again
     private static boolean wantToPlay = true;
+    private static boolean displayGame = false;
 
     //holds a first in first out queue of players in game
     private static PlayerQueue players = new PlayerQueue(8);
@@ -24,6 +34,7 @@ public class Deadwood {
     private static ArrayList<SceneCard> sceneCards;
     private static ArrayList<Room> rooms;
     private static ArrayList<Set> sets;
+    private static char[] colors = new char[] {'b', 'c', 'g', 'o', 'p', 'r', 'v', 'y'};
 
 
 
@@ -45,7 +56,7 @@ public class Deadwood {
             Player current = players.remove();
 
             //establish input
-            Scanner console = new Scanner(System.in);
+            //Scanner console = new Scanner(System.in);
 
             //booleans for chceking the state of the players location and turn
             boolean moving = false;
@@ -57,51 +68,27 @@ public class Deadwood {
             String choice;
             boolean choiceNotValid = true;
 
+            /*
+
             while(choiceNotValid){
 
-                System.out.println("Available actions: \n");
                 if(!(current.getRole() == (null))){
                     inRole = true;
-                    System.out.println("    -who\n");
-                    System.out.println("    -Where\n");
-                    System.out.println("    -Act\n");
-                    System.out.println("    -Rehearse\n");
-                    System.out.println("    -end\n");
+
                 }else if((current.getRoom().getName().equals("office")) && (!mov)){
                     inCO = true;
-                    System.out.println("    -who\n");
-                    System.out.println("    -Where\n");
-                    System.out.println("    -move\n");
-                    if(current.getRank() != 6){
-                        System.out.println("    -upgrade\n");
-                    }
-                    System.out.println("    -end\n");
+
                 }else if((current.getRoom().getName().equals("Trailer")) && (!mov)){
                     inTrl = true;
-                    System.out.println("    -who\n");
-                    System.out.println("    -Where\n");
-                    System.out.println("    -move\n");
-                    System.out.println("    -end\n");
-                }else if(!mov){
-                    System.out.println("    -who\n");
-                    System.out.println("    -Where\n");
-                    System.out.println("    -move\n");
-                    System.out.println("    -end\n");
-                }else if((getSet(current.getRoom().getName()).getScene()) != null) {
-                    System.out.println("    -who\n");
-                    System.out.println("    -Where\n");
-                    System.out.println("    -work\n");
-                    System.out.println("    -end\n");
-                }else{
-                    System.out.println("    -end\n");
+
                 }
 
                 //ask the current player for input
-                System.out.println(current.getName() + "'s turn: What would you like to do?\n");
+
 
                 //get and save player input
-                String command = console.next();
-                choice = console.nextLine();
+                //String command = console.next();
+                //choice = console.nextLine();
 
                 //call act if player types 'Act'
                 if((command.equals("Act")) &&(inRole)){
@@ -167,13 +154,14 @@ public class Deadwood {
 
                             System.out.print("\n");
 
-                        }else if(choice.contains("tooffice")){
+                        }/*else if(choice.contains("tooffice")){
                             inCO = true;
                             current.updateRoom(getRoom("office"));
                             validLocation = true;
                             mov = true;
                             choiceNotValid = false;
                         }
+
                     }
 
                     if(!validLocation){
@@ -207,35 +195,36 @@ public class Deadwood {
 
                 //call Where if the player types where
                 }else if(command.equals("Where")){
-                    View.where(current);
+                    //View.where(current);
 
                 //call work when the player types work and is on a set
-                }else if((command.equals("work")) && (! ((inTrl) && (inCO)))){
+            }if((command.equals("work")) && (! ((inTrl) && (inCO)))){
                     //check if the play successfully took the role
                     if(work(current, choice)){
                         moveChoice = true;
                         choiceNotValid = false;
                     }
 
-                //skip the current players turn if they type end
-                }else if(command.equals("end")){
-                    choiceNotValid = false;
-                }
-
                 //if the choice is not valid print an error and ask them to try again
+
                 if((choiceNotValid) && (moveChoice) && (!mov)){
                     System.out.println("Woops! Please type a valid choice for your turn\n");
                 }
 
-            }
+
+                }
+
 
             //player turn ended, put player back in PlayerQueue
             System.out.println(current.getName() + "'s turn has ended...\n");
             System.out.println("\n------------------------------------------------------------------------\n");
 
-        }
+            */
+
+        //}
 
     }
+}
 
     private static boolean work(Player current, String choice){
 
@@ -358,7 +347,6 @@ public class Deadwood {
         drawSceneCards();
 
         if(daysRemaining > 0){
-            System.out.println("\n\n\n\n\n\n\n ***********STARTING NEW DAY**********\n\n\n\n\n\n\n\n");
 
             Room trailer = getRoom("trailer");
 
@@ -397,7 +385,7 @@ public class Deadwood {
         }
     }
 
-    private static void startGame() {
+    private static void startGame() throws Exception{
 
         //**********GAME INITIALIZATION**********//
         //read in cards and rooms
@@ -410,11 +398,16 @@ public class Deadwood {
 
         drawSceneCards();
 
-        Scanner console = new Scanner(System.in);
 
-        View.displayStartMSG();
+
+
+
+        //Scanner console = new Scanner(System.in);
+
+        //View.displayStartMSG();
 
         //bool for info getting loop
+        /*
         boolean playInfoNotDone = true;
 
         boolean numProvided = false;
@@ -425,17 +418,20 @@ public class Deadwood {
 
         int numNames = 1;
 
+        */
+
         //while the program has not gotten all of the info from the player
+        /*
         while(playInfoNotDone){
 
             //ask the player to type in a player name
             System.out.println("Please enter the name of player " + numNames  + " (Type 'done' when you have finished entering player names, ONLY IF YOU HAVE NOT ALREADY INPUT NUMBER OF PLAYERS)");
-            String givenName = console.nextLine();
+            //String givenName = console.nextLine();
             numNames++;
 
             if(numProvided){
-                Player player = new Player(givenName);
-                players.add(player);
+                //Player player = new Player(givenName);
+                //players.add(player);
                 if(numNames == numPlayers){
                     System.out.println("All player names entered\n");
                     playInfoNotDone = false;
@@ -464,19 +460,22 @@ public class Deadwood {
             }
         }
 
+        */
         //decrement to get actual number of players in game
+        /*
         numPlayers--;
 
         //if there are 2-3 players, set daysRemaining to 3
         if(numPlayers <= 3){
             daysRemaining = 3;
         }
-
+        */
         //get a reference to the trailer room
-        Room trailer = getRoom("trailer");
+        //Room trailer = getRoom("trailer");
 
         //set every players location to the trialer and start them out with the
         // appropriate money/credits for the number of players in the game
+        /*
         for(int i = 0; i < numPlayers; i++){
             Player current = players.remove();
 
@@ -493,6 +492,60 @@ public class Deadwood {
                 current.updateRoom(trailer);
             }
         }
+        */
+
+        getNumPlayers();
+
+        while(!displayGame){
+            System.out.print("");
+        }
+
+        JFrame frame = new JFrame();
+        view.Board board = new view.Board();
+
+        frame.setTitle("Deadwood");
+        frame.setPreferredSize(new Dimension(1200, 900));
+        frame.setResizable(false);
+        frame.addWindowListener(new Closer());
+        JLayeredPane pain = new JLayeredPane();
+        pain.setPreferredSize(new Dimension(1200, 900));
+
+        for(int i = 0; i < numPlayers; i++){
+
+            Player player = players.remove();
+
+            JLabel die = new JLabel();
+            die.setIcon(getIcon(player));
+            pain.add(die, new Integer(1));
+            die.setBounds(1000, 300, getIcon(player).getIconWidth(), getIcon(player).getIconHeight());
+            die.setVisible(true);
+
+        }
+
+        frame.add(pain);
+        frame.add(board);
+        frame.pack();
+        frame.setVisible(true);
+        frame.setFocusable(true);
+
+
+
+
+
+
+
+    }
+
+    private static ImageIcon getIcon(Player player) throws Exception{
+
+        ImageIcon tempIcon = new ImageIcon(
+            ImageIO.read(
+                new File(String.format("view/resources/%s%d.png", player.getColor(), player.getRank()
+            )))
+        );
+
+        return tempIcon;
+
     }
 
     //called when there are no more days remaining in the game
@@ -586,63 +639,156 @@ public class Deadwood {
     }
 
 
-
-
     private static class Closer extends WindowAdapter {
         public void windowClosing(WindowEvent e) {
             System.exit(0);
         }
     }
 
+    private static void createPlayers(int playFlag){
+
+        for(int i = 1; i <= numPlayers; i++){
+            Player player = new Player("Player " + i);
+            Room trailer = getRoom("trailer");
+
+            player.updateRoom(trailer);
+            players.add(player);
+        }
 
 
-    public static void main(String[] args) throws Exception {
+        for(int i = 0; i < numPlayers; i++){
+            Player player = players.remove();
+            player.setColor(colors[i]);
+        }
+    }
 
+    private static void displayPlayers(){
 
-        JFrame frame = new JFrame();
-        view.Board board = new view.Board();
+    }
 
-        frame.setTitle("Deadwood");
-        frame.setPreferredSize(new Dimension(1200, 900));
+    private static void getNumPlayers() throws Exception{
+
+        JFrame frame = new JFrame("Player Menu");
         frame.setResizable(false);
-        frame.addWindowListener(new Closer());
-
-        frame.add(board);
-
-        frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+        JPanel panel = new JPanel();
+        JLabel title = new JLabel("How Many Players?");
+        title.setBounds(233, 40, 400, 30);
+        panel.setLayout(null);
+        panel.add(title);
+        frame.add(panel);
         frame.setVisible(true);
 
-
-
-
-
-
-        int arg = 0;
-
-        if(args.length != 0){
-            try{
-                arg = Integer.valueOf(args[0]);
-            }catch(NumberFormatException e){}
-        }
-
-
-        if (arg != 0) {
-
-            numPlayers = Integer.valueOf(arg) + 1;
-            if(!((numPlayers <= 8) && (numPlayers >= 2))){
-                System.out.println("Invalid number of players\n");
-                return;
+        JButton button2 = new JButton("2 Players --> (Play 3 days)");
+        button2.setBounds(100, 80, 400, 30);
+        panel.add(button2);
+        button2.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 2;
+                displayGame = true;
+                daysRemaining = 3;
+                frame.setVisible(false);
+                frame.dispose();
             }
+        });
 
-        }
-
-        while(wantToPlay){
-            startGame();
-            while (daysRemaining != 0) {
-                playGame();
-                startDay();
+        JButton button3 = new JButton("3 Players --> (Play 3 days)");
+        button3.setBounds(100, 120, 400, 30);
+        panel.add(button3);
+        button3.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 3;
+                displayGame = true;
+                daysRemaining = 3;
+                frame.setVisible(false);
+                frame.dispose();
             }
-            endGame();
+        });
+
+        JButton button4 = new JButton("4 Players --> (Play 4 days)");
+        button4.setBounds(100, 160, 400, 30);
+        panel.add(button4);
+        button4.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 4;
+                displayGame = true;
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+        JButton button5 = new JButton("5 Players --> (Start with 2 credits)");
+        button5.setBounds(100, 200, 400, 30);
+        panel.add(button5);
+        button5.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 5;
+                displayGame = true;
+                //setting the playflag to 1 means the players will get 2 credits on creation
+                int playFlag = 1;
+                createPlayers(playFlag);
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+        JButton button6 = new JButton("6 Players --> (Start with 4 credits)");
+        button6.setBounds(100, 240, 400, 30);
+        panel.add(button6);
+        button6.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 6;
+                displayGame = true;
+                //setting the playflag to 2 means the players will get 4 credits on creation
+                int playFlag = 2;
+                createPlayers(playFlag);
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+        JButton button7 = new JButton("7 Players --> (Start at rank 2)");
+        button7.setBounds(100, 280, 400, 30);
+        panel.add(button7);
+        button7.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 7;
+                displayGame = true;
+                //setting the playflag to 3 means the players will start at rank 2 on creation
+                int playFlag = 3;
+                createPlayers(playFlag);
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+        JButton button8 = new JButton("8 Players --> (Start at rank 2)");
+        button8.setBounds(100, 320, 400, 30);
+        panel.add(button8);
+        button8.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                numPlayers = 8;
+                displayGame = true;
+                //setting the playflag to 3 means the players will start at rank 2 on creation
+                int playFlag = 3;
+                createPlayers(playFlag);
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+    }
+
+
+
+    public static void main(String[] args) throws Exception{
+
+        startGame();
+        while (daysRemaining != 0) {
+            playGame();
+            startDay();
         }
+        endGame();
     }
 }

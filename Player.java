@@ -12,6 +12,7 @@ public class Player {
     private int rank;
 
     private Room room;
+    private char color;
     /*
     Set set;
     CastingOffice castingOffice;
@@ -226,6 +227,10 @@ public class Player {
 
     }
 
+    public void setColor(char color){
+        this.color = color;
+    }
+
     private static int rollDice(){
         return 0;
     }
@@ -256,6 +261,10 @@ public class Player {
 
     public void removeRole() {
         role = null;
+    }
+
+    public char getColor(){
+        return color;
     }
 
 }
