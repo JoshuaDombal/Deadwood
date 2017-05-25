@@ -1,3 +1,8 @@
+package model;
+
+import java.util.Collection;
+import java.util.LinkedList;
+
 public class Role {
 
     private String name;
@@ -5,22 +10,32 @@ public class Role {
 
     private int roleRank;
     private int rehearseCounter;
-    //private int sceneBonus;
     private String line;
 
     private boolean onCard;
     private boolean occupied;
 
+    private Collection<Listener> listeners;
 
     public Role (String name, int roleRank, String line, boolean onCard) {
+      listeners = new LinkedList<Listener>();
       this.name = name;
       this.roleRank = roleRank;
       this.player = null;
       this.rehearseCounter = 0;
-      //this.sceneBonus = 0;
       this.onCard = onCard;
       this.occupied = false;
       this.line = line;
+    }
+
+    public void subscribe(Listener l){
+        listeners.add(l);
+    }
+
+    protected void changed(){
+        for(Listener l : listeners){
+            l.changed(this);
+        }
     }
 
     public void incrementRehearse() {
