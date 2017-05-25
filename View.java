@@ -6,9 +6,6 @@ public class View {
     //takes a sceneCard object and displays it's info like roles and if they're open
     public static void displaySceneCard(SceneCard sceneCard){
 
-
-        /*
-
         Role[] roles = sceneCard.getRoles();
         System.out.println("Name of scene: " + sceneCard.getName() + "\n");
         System.out.println("Budget: " + sceneCard.getBudget() + "\n");
@@ -25,11 +22,8 @@ public class View {
             }
             System.out.println("Name: " + roles[i].getName() + "\n\n  -Line: \"" + roles[i].getLine() + "\"" + "\n  -Rank: " + roles[i].getRank() + "\n  -Status: " + status + "\n");
         }
-
-        */
     }
 
-    /*
     //takes a room object as an argument and displays it's adjacent rooms
     public static void displayAdjacentRooms(Room room){
 
@@ -44,7 +38,6 @@ public class View {
             System.out.print("  -" + adjacent[i] + "\n");
         }
     }
-    */
 
     public static void who(Player currentPlayer) {
 
@@ -78,8 +71,6 @@ public class View {
         }
     }
 
-
-    /*
     public static void where(Player currentPlayer){
 
         Room currentRoom = currentPlayer.getRoom();
@@ -137,10 +128,6 @@ public class View {
         System.out.println("");
     }
 
-    */
-
-
-
     /*
     public static void displayStartMSG(){
 
@@ -161,6 +148,5 @@ public class View {
         System.out.println("   -If there are 6 players, start each player with 4 credits");
         System.out.println("   -If there are 7 or 8 players, start each player with the rank of 2\n");
     }
-
     */
 }

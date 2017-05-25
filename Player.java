@@ -227,10 +227,6 @@ public class Player {
 
     }
 
-    public void setColor(char color){
-        this.color = color;
-    }
-
     private static int rollDice(){
         return 0;
     }
@@ -261,6 +257,10 @@ public class Player {
 
     public void removeRole() {
         role = null;
+    }
+
+    public void setColor(char color){
+        this.color = color;
     }
 
     public char getColor(){
