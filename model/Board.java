@@ -626,6 +626,10 @@ public class Board {
         this.daysRemaining = daysRemaining;
     }
 
+    public ArrayList<Set> getSets(){
+        return this.sets;
+    }
+
 
 
 

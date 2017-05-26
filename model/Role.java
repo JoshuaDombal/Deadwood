@@ -1,6 +1,15 @@
 package model;
 
+import java.util.Collection;
+import java.util.LinkedList;
+
 public class Role {
+
+    public interface Listener{
+        void changed(Role r);
+    }
+
+    private Collection<Listener> listeners;
 
     private String name;
     private Player player;
@@ -16,6 +25,7 @@ public class Role {
 
 
     public Role (String name, int roleRank, String line, boolean onCard, int[] area) {
+      listeners = new LinkedList<Listener>();
       this.name = name;
       this.roleRank = roleRank;
       this.player = null;
@@ -26,6 +36,16 @@ public class Role {
       this.line = line;
       this.onCard = onCard;
       this.area = area;
+    }
+
+    public void subscribe(Listener l){
+        listeners.add(l);
+    }
+
+    protected void changed(){
+        for(Listener l : listeners){
+            l.changed(this);
+        }
     }
 
     public void incrementRehearse() {
@@ -39,6 +59,15 @@ public class Role {
 
     public boolean checkForPlayer() {
         return occupied;
+    }
+
+    //*****************temporary!!!********************//
+    public void abandon(){
+        this.occupied = false;
+    }
+
+    public void take(){
+        this.occupied = true;
     }
 
     // This function should maybe not be in here
@@ -73,5 +102,21 @@ public class Role {
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public int getX(){
+        return this.area[0];
+    }
+
+    public int getY(){
+        return this.area[1];
+    }
+
+    public int getH(){
+        return this.area[2];
+    }
+
+    public int getW(){
+        return this.area[3];
     }
 }
