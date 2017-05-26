@@ -21,6 +21,7 @@ public class Player {
     // Constructor
     public Player (String name){
         this.name = name;
+        this.rank = 1;
     }
 
     public boolean rehearse(SceneCard card) {
@@ -30,11 +31,11 @@ public class Player {
         int budget = card.getBudget();
         int rehearseCounter = role.getRehearseBonus();
 
-        if((rehearseCounter - 2) <= budget){
+        if(rehearseCounter <= (budget - 2)){
             role.incrementRehearse();
             success = true;
             System.out.println("Successfully rehearsed your part!\n");
-        }else if((rehearseCounter - 1) <= budget){
+        }else{
             System.out.println("You've already rehearsed enough to master the role! (Guaranteed successful act)\n");
         }
 
@@ -45,85 +46,115 @@ public class Player {
         return success;
     }
 
-    public boolean upgrade(){
+    public boolean upgrade(String choice){
 
         boolean success = false;
-        Scanner console = new Scanner(System.in);
-        String choice;
-        String paymentChoice;
+
+        String[] input = choice.split(" ");
+
+
 
         if(rank != 6){
-            System.out.print("Which rank would you like to upgrade to?  ");
-            choice = console.nextLine();
-            int rankChoice = Integer.parseInt(choice);
+            //System.out.print("Which rank would you like to upgrade to?  ");
+            //choice = console.nextLine();
 
-            System.out.println("Would you like to pay with cash or credits? ");
-            paymentChoice = console.nextLine();
+            String paymentChoice = input[1];
+
+            int rankChoice = Integer.parseInt(input[2]);
+
+            //System.out.println("Would you like to pay with cash or credits? ");
+
             //int payChoice = Integer.parseInt(paymentChoice);
 
 
-            if(rankChoice == 2){
-                if ((paymentChoice.equals("cash")) && (cash >= 4)) {
+            if((rankChoice == 2) && (rank < 2)){
+                if ((paymentChoice.equals("$")) && (cash >= 4)) {
                     cash = cash - 4;
                     rank = 2;
-                } else if ((paymentChoice.equals("credits")) && (credits >= 5)) {
+                    success = true;
+                } else if ((paymentChoice.equals("cr")) && (credits >= 5)) {
                     credits = credits - 5;
+                    success = true;
                 } else {
-                    return false;
+                    System.out.println("Insufficient Funds!\n");
+
                 }
 
 
             }else if((rankChoice == 3) && (rank < 3)){
-                if ((paymentChoice.equals("cash")) && (cash >= 10)) {
+                if ((paymentChoice.equals("$")) && (cash >= 10)) {
                     cash = cash - 10;
                     rank = 3;
-                } else if ((paymentChoice.equals("credits")) && (credits >= 10)) {
+                    success = true;
+                } else if ((paymentChoice.equals("cr")) && (credits >= 10)) {
                     credits = credits - 10;
                     rank = 3;
+                    success = true;
                 } else {
-                    return false;
+                    System.out.println("Insufficient Funds!\n");
+
                 }
 
 
             } else if((rankChoice == 4) && (rank < 4)){
-                if ((paymentChoice.equals("cash")) && (cash >= 18)) {
+                if ((paymentChoice.equals("$")) && (cash >= 18)) {
                     cash = cash - 18;
                     rank = 4;
-                } else if ((paymentChoice.equals("credits")) && (credits >= 15)) {
+                    success = true;
+                } else if ((paymentChoice.equals("cr")) && (credits >= 15)) {
                     credits = credits - 15;
                     rank = 4;
+                    success = true;
                 } else {
-                    return false;
+                    System.out.println("Insufficient Funds!\n");
+
                 }
 
 
             } else if((rankChoice == 5) && (rank < 5)){
-                if ((paymentChoice.equals("cash")) && (cash >= 28)) {
+                if ((paymentChoice.equals("$")) && (cash >= 28)) {
                     cash = cash - 28;
                     rank = 5;
-                } else if ((paymentChoice.equals("credits")) && (credits >= 20)) {
+                    success = true;
+                } else if ((paymentChoice.equals("cr")) && (credits >= 20)) {
                     credits = credits - 20;
                     rank = 5;
+                    success = true;
                 } else {
-                    return false;
+                    System.out.println("Insufficient Funds!\n");
+
                 }
 
 
             } else if((rankChoice == 6) && (rank < 6) && ((cash >= 40) || (credits >= 25))){
-                if ((paymentChoice.equals("cash")) && (cash >= 40)) {
+                if ((paymentChoice.equals("$")) && (cash >= 40)) {
                     cash = cash - 40;
                     rank = 6;
-                } else if ((paymentChoice.equals("credits")) && (credits >= 25)) {
+                    success = true;
+                } else if ((paymentChoice.equals("cr")) && (credits >= 25)) {
                     credits = credits - 25;
                     rank = 6;
+                    success = true;
                 } else {
-                    return false;
+                    System.out.println("Insufficient Funds!\n");
+
                 }
+
+            }else if(rankChoice > 6){
+                System.out.println("Unable to upgrade rank over rank 6\n");
+
+            }else{
+                if(rank == rankChoice){
+                    System.out.println("Already at rank " + rankChoice + "!\n");
+                }else{
+                    System.out.println("Unable to downgrade rank\n");
+                }
+
 
             }
         }
 
-        return true;
+        return success;
     }
 
     public void act(SceneCard card, Set set){

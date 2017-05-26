@@ -128,8 +128,13 @@ public class View {
         System.out.println("");
     }
 
+
     /*
     public static void displayStartMSG(){
+
+    public static void displayStartMSG(){
+
+
         //print greeting message
         System.out.println("DEADWOOD:\n");
         System.out.println("Welcome to Deadwood Studios, home of the million-movie month. You’re a bit actor with a simple dream.");
@@ -138,6 +143,7 @@ public class View {
         System.out.println("So strap on your chaps and mosey up to the roof. Your line is “Aaaiiigggghh!\"");
         System.out.println("DEADWOOD is a fast-paced board game about actors, acting, and the thrill-filled life of a wandering ");
         System.out.println("bit player. It’s best with 2 to 6 players, but still decent with 7 or 8. Play time is about 60 minutes.\n");
+
         //info about the set up
         System.out.println("Please enter player information (must be at least 2 players and at most 8):\n");
         System.out.println("   -If there are 2 or 3 players, play only 3 days");
@@ -146,5 +152,7 @@ public class View {
         System.out.println("   -If there are 6 players, start each player with 4 credits");
         System.out.println("   -If there are 7 or 8 players, start each player with the rank of 2\n");
     }
+
     */
+
 }

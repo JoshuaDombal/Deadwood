@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 //View
 import javax.swing.JFrame;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -32,11 +33,13 @@ public class Deadwood {
         public void windowClosing(WindowEvent e) {
             System.exit(0);
         }
+
     }
 
     public void setDisplayGame(boolean v) {
         this.displayGame = v;
     }
+
 
     public static void main(String[] args) throws Exception {
 
@@ -45,6 +48,21 @@ public class Deadwood {
         JLayeredPane pane1 = new JLayeredPane();
         //JLayeredPane pane2 = new JLayeredPane();
 
+
+    //help function that is passed the name of a set and returns the corresponding set object
+    public static Set getSet(String setName){
+        //set equal to null incase set doesn't exist
+        Set set = null;
+
+        //check through the arrayList of sets
+        for(int i = 0; i < sets.size(); i++){
+            if(sets.get(i).getName().equals(setName)){
+                set = sets.get(i);
+                return set;
+            }
+        }
+        return set;
+    }
 
         model.Board.startGame();
 
@@ -56,7 +74,6 @@ public class Deadwood {
         //model.Board mo = new model.CurrentDisplay();
         view.CurrentDisplay playerDisplay = new view.CurrentDisplay();
         controller.CurrentDisplay cd = new controller.CurrentDisplay();
-
 
 
 
@@ -77,7 +94,7 @@ public class Deadwood {
 
         pane1.setVisible(true);
 
-
+       
         frame.setTitle("Deadwood");
         frame.setPreferredSize(new Dimension(1500, 900));
         frame.setResizable(false);
@@ -86,21 +103,16 @@ public class Deadwood {
         frame.add(pane1);
         //frame.add(pane2);
 
+
         frame.pack();
         frame.setVisible(true);
 
         while (m.daysRemaining != 0) {
             m.playGame();
             m.startDay();
+
         }
         m.endGame();
-
-
-
-
-
-
-
 
 
 

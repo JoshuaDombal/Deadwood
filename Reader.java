@@ -126,11 +126,13 @@ public class Reader{
                 Role[] roles = new Role[5];
                 roles[4] = null;
 
+
                 int[] sArea;
                 int sx;
                 int sy;
                 int sh;
                 int sw;
+
 
                 String[] neighbors = new String[4];
 
