@@ -1,3 +1,4 @@
+package model;
 /**
  * Created by carpend3 on 5/15/17.
  */
@@ -5,6 +6,8 @@ public class View {
 
     //takes a sceneCard object and displays it's info like roles and if they're open
     public static void displaySceneCard(SceneCard sceneCard){
+
+        /*
 
         Role[] roles = sceneCard.getRoles();
         System.out.println("Name of scene: " + sceneCard.getName() + "\n");
@@ -22,10 +25,14 @@ public class View {
             }
             System.out.println("Name: " + roles[i].getName() + "\n\n  -Line: \"" + roles[i].getLine() + "\"" + "\n  -Rank: " + roles[i].getRank() + "\n  -Status: " + status + "\n");
         }
+
+        */
     }
 
     //takes a room object as an argument and displays it's adjacent rooms
     public static void displayAdjacentRooms(Room room){
+
+        /*
 
         String[] adjacent = room.getNeighbors();
         System.out.print("Adjacent Rooms:\n\n");
@@ -37,9 +44,13 @@ public class View {
 
             System.out.print("  -" + adjacent[i] + "\n");
         }
+
+        */
     }
 
     public static void who(Player currentPlayer) {
+
+        /*
 
         //get the room the player is currently in
         Room currentRoom = currentPlayer.getRoom();
@@ -69,9 +80,13 @@ public class View {
                 System.out.println("    -Role Status: Off card");
             }
         }
+
+        */
     }
 
     public static void where(Player currentPlayer){
+
+        /*
 
         Room currentRoom = currentPlayer.getRoom();
 
@@ -126,15 +141,12 @@ public class View {
         }
 
         System.out.println("");
-    }
 
+        */
+    }
 
     /*
     public static void displayStartMSG(){
-
-    public static void displayStartMSG(){
-
-
         //print greeting message
         System.out.println("DEADWOOD:\n");
         System.out.println("Welcome to Deadwood Studios, home of the million-movie month. You’re a bit actor with a simple dream.");
@@ -143,7 +155,6 @@ public class View {
         System.out.println("So strap on your chaps and mosey up to the roof. Your line is “Aaaiiigggghh!\"");
         System.out.println("DEADWOOD is a fast-paced board game about actors, acting, and the thrill-filled life of a wandering ");
         System.out.println("bit player. It’s best with 2 to 6 players, but still decent with 7 or 8. Play time is about 60 minutes.\n");
-
         //info about the set up
         System.out.println("Please enter player information (must be at least 2 players and at most 8):\n");
         System.out.println("   -If there are 2 or 3 players, play only 3 days");
@@ -152,7 +163,5 @@ public class View {
         System.out.println("   -If there are 6 players, start each player with 4 credits");
         System.out.println("   -If there are 7 or 8 players, start each player with the rank of 2\n");
     }
-
     */
-
 }

@@ -1,3 +1,5 @@
+package model;
+
 public class Set extends Room {
 
     private SceneCard scene;
@@ -54,7 +56,7 @@ public class Set extends Room {
 
         }
 
-        Deadwood.decrementScene();
+        Board.decrementScene();
 
     }
 
