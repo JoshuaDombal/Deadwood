@@ -25,6 +25,7 @@ public class Deadwood {
     private static view.Board v;
     private static controller.Board c;
 
+
     //bools for the loops in main and play game
 
     private static class Closer extends WindowAdapter {
@@ -41,13 +42,20 @@ public class Deadwood {
 
 
         JFrame frame = new JFrame();
-        JLayeredPane pane = new JLayeredPane();
+        JLayeredPane pane1 = new JLayeredPane();
+        //JLayeredPane pane2 = new JLayeredPane();
 
-        m.startGame();
+
+        model.Board.startGame();
 
         m = new model.Board();
         v = new view.Board(m);
         c = new controller.Board(m);
+
+
+        //model.Board mo = new model.CurrentDisplay();
+        view.CurrentDisplay playerDisplay = new view.CurrentDisplay();
+        controller.CurrentDisplay cd = new controller.CurrentDisplay();
 
 
 
@@ -61,16 +69,22 @@ public class Deadwood {
         }
 
 
-        pane.add(v, new Integer(0));
-        pane.add(c, new Integer(1));
-        pane.setVisible(true);
+        pane1.add(v, new Integer(0));
+        pane1.add(c, new Integer(1));
+
+        pane1.add(playerDisplay, new Integer(2));
+        pane1.add(cd, new Integer(3));
+
+        pane1.setVisible(true);
+
 
         frame.setTitle("Deadwood");
         frame.setPreferredSize(new Dimension(1500, 900));
         frame.setResizable(false);
         frame.addWindowListener(new Closer());
 
-        frame.add(pane);
+        frame.add(pane1);
+        //frame.add(pane2);
 
         frame.pack();
         frame.setVisible(true);
