@@ -21,9 +21,9 @@ import javax.swing.ImageIcon;
 
 public class Deadwood {
     public static boolean displayGame = false;
-    private static model.Board model;
-    private static view.Board view;
-    private static controller.Board controller;
+    private static model.Board m;
+    private static view.Board v;
+    private static controller.Board c;
 
     //bools for the loops in main and play game
 
@@ -40,14 +40,18 @@ public class Deadwood {
     public static void main(String[] args) throws Exception {
 
 
+        JFrame frame = new JFrame();
+        JLayeredPane pane = new JLayeredPane();
 
-        model = new model.Board();
-        view = new view.Board(model);
-        controller = new controller.Board(model);
+        m.startGame();
+
+        m = new model.Board();
+        v = new view.Board(m);
+        c = new controller.Board(m);
 
 
 
-        model.startGame();
+
 
         getNumPlayers();
 
@@ -56,24 +60,9 @@ public class Deadwood {
             System.out.print("");
         }
 
-        while (model.daysRemaining != 0) {
-            model.playGame();
-            model.startDay();
-        }
-        model.endGame();
 
-
-
-
-
-        JFrame frame = new JFrame();
-        JLayeredPane pane = new JLayeredPane();
-
-
-
-
-        pane.add(view, new Integer(0));
-        pane.add(controller, new Integer(1));
+        pane.add(v, new Integer(0));
+        pane.add(c, new Integer(1));
         pane.setVisible(true);
 
         frame.setTitle("Deadwood");
@@ -85,6 +74,17 @@ public class Deadwood {
 
         frame.pack();
         frame.setVisible(true);
+
+        while (m.daysRemaining != 0) {
+            m.playGame();
+            m.startDay();
+        }
+        m.endGame();
+
+
+
+
+
 
 
 
@@ -120,13 +120,13 @@ public class Deadwood {
        panel.add(button2);
        button2.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(2);
+              m.setNumPlayers(2);
                displayGame = true;
-               model.daysRemaining = 3;
+              m.daysRemaining = 3;
                //setting the playflag to 0 means that there are no changes besides number of days
 
                int playFlag = 0;
-               model.createPlayers(playFlag);
+              m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -137,12 +137,12 @@ public class Deadwood {
        panel.add(button3);
        button3.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(3);
+              m.setNumPlayers(3);
                displayGame = true;
-               model.daysRemaining = 3;
+              m.daysRemaining = 3;
                //setting the playflag to 0 means that there are no changes besides number of days
                int playFlag = 0;
-               model.createPlayers(playFlag);
+              m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -153,11 +153,11 @@ public class Deadwood {
        panel.add(button4);
        button4.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(4);
+              m.setNumPlayers(4);
                displayGame = true;
                //setting the playflag to 0 means that there are no changes besides number of days
                int playFlag = 0;
-               model.createPlayers(playFlag);
+              m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -168,11 +168,11 @@ public class Deadwood {
        panel.add(button5);
        button5.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(5);
+              m.setNumPlayers(5);
                displayGame = true;
                //setting the playflag to 1 means the players will get 2 credits on creation
                int playFlag = 1;
-               model.createPlayers(playFlag);
+              m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -183,11 +183,11 @@ public class Deadwood {
        panel.add(button6);
        button6.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(6);
+               m.setNumPlayers(6);
                displayGame = true;
                //setting the playflag to 2 means the players will get 4 credits on creation
                int playFlag = 2;
-               model.createPlayers(playFlag);
+               m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -198,11 +198,11 @@ public class Deadwood {
        panel.add(button7);
        button7.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(7);
+               m.setNumPlayers(7);
                displayGame = true;
                //setting the playflag to 3 means the players will start at rank 2 on creation
                int playFlag = 3;
-               model.createPlayers(playFlag);
+               m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -213,11 +213,11 @@ public class Deadwood {
        panel.add(button8);
        button8.addActionListener(new ActionListener(){
            public void actionPerformed(ActionEvent e){
-               model.setNumPlayers(8);
+               m.setNumPlayers(8);
                displayGame = true;
                //setting the playflag to 3 means the players will start at rank 2 on creation
                int playFlag = 3;
-               model.createPlayers(playFlag);
+               m.createPlayers(playFlag);
                frame.setVisible(false);
                frame.dispose();
            }
@@ -226,9 +226,6 @@ public class Deadwood {
 
        frame.add(panel);
        frame.setVisible(true);
-
-
-
 
 
    }
