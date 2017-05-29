@@ -17,6 +17,8 @@ public class Reader{
 
     private static ArrayList<Set> sets;
     private static ArrayList<Room> rooms;
+    private static CastingOffice castingOff;
+    private static Trailer trail;
 
 
     public static ArrayList<Room>getRooms() {
@@ -49,19 +51,16 @@ public class Reader{
 
 
 
-            // Casting Office read
+            // CASTING OFFICE ************************************************//
             Room co;
             String oName = "office";
             String[] officeNeighbors = new String[3];
+            Upgrade[] upgrades = new Upgrade[10];
 
 
             NodeList officeList = el.getElementsByTagName("office");
             Node officeNode = officeList.item(0);
             Element oElement = (Element) officeNode;
-
-            //NodeList nList = tElement.getElementsByTagName("neighbors");
-            //Node neNode = trailerList.item(0);
-            //Element neElement = (Element) neNode;
 
 
             NodeList neiList = oElement.getElementsByTagName("neighbor");
@@ -73,14 +72,92 @@ public class Reader{
                 officeNeighbors[j] = neElement.getAttribute("name");
             }
 
-            co = new Room(oName, officeNeighbors);
+
+            // UPGRADES FOR OFFICE ---------------------------------------------
+
+
+            NodeList upgradeList = oElement.getElementsByTagName("upgrade");
+
+            for (int j = 0; j < upgradeList.getLength(); j++) {
+
+                Upgrade upg;
+                int level;
+                String currency;
+                int amount;
+
+                int[] upgArea;
+                int ux;
+                int uy;
+                int uh;
+                int uw;
+
+                Node upgradeNode = upgradeList.item(j);
+                Element upgradeElement = (Element) upgradeNode;
+
+                level = Integer.parseInt(upgradeElement.getAttribute("level"));
+                currency = upgradeElement.getAttribute("currency");
+                amount = Integer.parseInt(upgradeElement.getAttribute("amt"));
+
+                NodeList upgradeAreaList = upgradeElement.getElementsByTagName("area");
+                Node upgradeAreaNode = upgradeAreaList.item(0);
+                Element upgradeAreaElement = (Element) upgradeAreaNode;
+
+                ux = Integer.parseInt(upgradeAreaElement.getAttribute("x"));
+                uy = Integer.parseInt(upgradeAreaElement.getAttribute("y"));
+                uh = Integer.parseInt(upgradeAreaElement.getAttribute("h"));
+                uw = Integer.parseInt(upgradeAreaElement.getAttribute("w"));
+
+                upgArea = new int[] {ux, uy, uh, uw};
+
+                upg = new Upgrade(level, currency, amount, upgArea);
+                upgrades[j] = upg;
+
+
+                //System.out.println("TRAILER Neighbor: " + neElement.getAttribute("name"));
+            }
+
+
+
+
+
+
+
+
+            // AREA OF CASTING OFFICE ------------------------------------------
+
+            int[] oArea;
+            int ox;
+            int oy;
+            int oh;
+            int ow;
+
+            NodeList officeAreaList = oElement.getElementsByTagName("area");
+            Node officeAreaNode = officeAreaList.item(0);
+            Element officeAreaElement = (Element) officeAreaNode;
+
+            ox = Integer.parseInt(officeAreaElement.getAttribute("x"));
+            oy = Integer.parseInt(officeAreaElement.getAttribute("y"));
+            oh = Integer.parseInt(officeAreaElement.getAttribute("h"));
+            ow = Integer.parseInt(officeAreaElement.getAttribute("w"));
+
+            oArea = new int[] {ox, oy, oh, ow};
+
+            //------------------------------------------------------------------
+
+
+            castingOff = new CastingOffice(oName, officeNeighbors, oArea, upgrades);
+            co = new Room(oName, officeNeighbors, oArea);
             rooms.add(co);
 
+            // END CASTING OFFICE ********************************************//
 
 
 
-            //Trailer trailer;
-            //CastingOffice castingOffice;
+
+
+
+            // TRAILER *********************************************************
+
             Room t;
             String rName = "trailer";
             String[] ns = new String[3];
@@ -106,12 +183,39 @@ public class Reader{
                 //System.out.println("TRAILER Neighbor: " + neElement.getAttribute("name"));
             }
 
-            t = new Room(rName, ns);
+
+
+            // AREA OF TRAILER ------------------------------------------
+
+            int[] tArea;
+            int tx;
+            int ty;
+            int th;
+            int tw;
+
+            NodeList trailerAreaList = tElement.getElementsByTagName("area");
+            Node trailerAreaNode = trailerAreaList.item(0);
+            Element trailerAreaElement = (Element) trailerAreaNode;
+
+            tx = Integer.parseInt(trailerAreaElement.getAttribute("x"));
+            ty = Integer.parseInt(trailerAreaElement.getAttribute("y"));
+            th = Integer.parseInt(trailerAreaElement.getAttribute("h"));
+            tw = Integer.parseInt(trailerAreaElement.getAttribute("w"));
+            tArea = new int[] {tx, ty, th, tw};
+            //------------------------------------------------------------------
+
+
+            t = new Room(rName, ns, tArea);
             rooms.add(t);
 
             //System.out.println("NEIBS: " + neElement.getAttribute("name"));
 
+            // END TRAILER ***************************************************//
 
+
+
+
+            // GET SETS ********************************************************
 
             NodeList setList = el.getElementsByTagName("set");
             //System.out.println(setList.getLength());
@@ -182,10 +286,10 @@ public class Reader{
                     Take take;
 
                     int takeNum;
-                    int tx;
-                    int ty;
-                    int th;
-                    int tw;
+                    int tax;
+                    int tay;
+                    int tah;
+                    int taw;
 
                     takeNum = Integer.parseInt(takeElement.getAttribute("number"));
 
@@ -193,17 +297,17 @@ public class Reader{
                     Node aNode = aList.item(0);
                     Element aElement = (Element) aNode;
 
-                    tx = Integer.parseInt(aElement.getAttribute("x"));
-                    ty = Integer.parseInt(aElement.getAttribute("y"));
-                    th = Integer.parseInt(aElement.getAttribute("h"));
-                    tw = Integer.parseInt(aElement.getAttribute("w"));
+                    tax = Integer.parseInt(aElement.getAttribute("x"));
+                    tay = Integer.parseInt(aElement.getAttribute("y"));
+                    tah = Integer.parseInt(aElement.getAttribute("h"));
+                    taw = Integer.parseInt(aElement.getAttribute("w"));
 
                     System.out.println("PART AREA x : " + aElement.getAttribute("x"));
                     System.out.println("PART AREA y : " + aElement.getAttribute("y"));
                     System.out.println("PART AREA h : " + aElement.getAttribute("h"));
                     System.out.println("PART AREA w : " + aElement.getAttribute("w"));
 
-                    take = new Take(takeNum, tx, ty, th, tw);
+                    take = new Take(takeNum, tax, tay, tah, taw);
                     takes[p] = take;
                     p++;
                 }
@@ -261,10 +365,12 @@ public class Reader{
                 }
 
                 set = new Set(setName, nShots, nRoles, roles, neighbors, sArea, takes);
-                room = new Room(setName, neighbors);
+                room = new Room(setName, neighbors, sArea);
 
                 sets.add(set);
                 rooms.add(room);
+
+                // END GET SETS ************************************************
 
 
                 //System.out.println();
