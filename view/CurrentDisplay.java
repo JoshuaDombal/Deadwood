@@ -4,6 +4,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
+import java.io.File;
 import java.util.*;
 
 public class CurrentDisplay extends JLayeredPane {
@@ -15,8 +16,7 @@ public class CurrentDisplay extends JLayeredPane {
 
         currentPlayerInfoLabel = new JLabel();
 
-        Class cls = getClass();
-        icon = new ImageIcon(ImageIO.read(cls.getResourceAsStream("b1.png")));
+        icon = new ImageIcon(ImageIO.read(new File("b1.png")));
 
         currentPlayerInfoLabel.setIcon(icon);
         add(currentPlayerInfoLabel, new Integer(1));

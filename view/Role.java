@@ -7,7 +7,7 @@ import javax.swing.JLayeredPane;
 import java.io.File;
 
 public class Role
-    extends javax.swing.JLayeredPane
+    extends JLayeredPane
     implements model.Role.Listener
 {
 
