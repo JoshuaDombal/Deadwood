@@ -68,6 +68,8 @@ public class Board {
             BoardLayersListener.setCurrentCash(current);
             BoardLayersListener.setCurrentRank(current);
             BoardLayersListener.setCurrentLocation(current);
+            BoardLayersListener.setCurrentRole(current);
+            BoardLayersListener.setCurrentRehearsePoints(current);
 
             System.out.println(current.getName());
 
@@ -163,6 +165,7 @@ public class Board {
                     moveChoice = true;
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
+                    System.out.println("LLLLLLLLLLLLLLL");
 
                     //if the player rehearses successfully, pop out of the loop
                     if(current.rehearse(card)){
@@ -634,6 +637,7 @@ public class Board {
         for(int i = 1; i <= numPlayers; i++){
             Player player = new Player("Player " + i);
             Room trailer = getRoom("trailer");
+
 
             System.out.println(player.getName());
 

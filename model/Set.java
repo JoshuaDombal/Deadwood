@@ -12,7 +12,7 @@ public class Set extends Room {
     private Take[] takes;
 
     public Set(String name, int shotTokens, int numRoles, Role[] roles, String[] neighbors, int[] area, Take[] takes){
-        super(name, neighbors);
+        super(name, neighbors, area);
         this.scene = scene;
         this.roles = roles;
         this.shotTokens = shotTokens;
