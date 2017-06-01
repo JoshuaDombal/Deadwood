@@ -57,7 +57,11 @@ public class Board {
             -present them with appropriate options and information for their turn
             -take input of there choice, check if it is valid, call corresponding method for choice
     */
-    public static void playGame() {
+    public static void playGame() throws Exception {
+
+        for(int i = 0; i < sets.size(); i++){
+            BoardLayersListener.displaySceneCard(sets.get(i));
+        }
 
         while(scenesRemaining > 1){
 
