@@ -1,5 +1,7 @@
 package model;
 
+import view.BoardLayersListener;
+
 import java.util.*;
 import java.util.Scanner;
 import java.lang.*;
@@ -18,6 +20,8 @@ import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
 import java.io.File;
 import javax.swing.ImageIcon;
+
+import static view.BoardLayersListener.*;
 
 
 public class Board {
@@ -38,6 +42,11 @@ public class Board {
     private static ArrayList<Room> rooms;
     private static ArrayList<Set> sets;
 
+    private static Player curPlayer = new Player("null");
+    private static String command = "";
+    private static String choice = "";
+    private static boolean choiceMade;
+
 
 
     //Outlines the basic loop of gameplay
@@ -48,17 +57,28 @@ public class Board {
             -present them with appropriate options and information for their turn
             -take input of there choice, check if it is valid, call corresponding method for choice
     */
-    public static void playGame() {
+    public static void playGame() throws Exception {
+
+        for(int i = 0; i < sets.size(); i++){
+            BoardLayersListener.displaySceneCard(sets.get(i));
+        }
 
         while(scenesRemaining > 1){
 
             //pop player from queue
             Player current = players.remove();
+            BoardLayersListener.setCurrentPlayer(current);
+            BoardLayersListener.setCurrentCredits(current);
+            BoardLayersListener.setCurrentCash(current);
+            BoardLayersListener.setCurrentRank(current);
+            BoardLayersListener.setCurrentLocation(current);
+            BoardLayersListener.setCurrentRole(current);
+            BoardLayersListener.setCurrentRehearsePoints(current);
 
             System.out.println(current.getName());
 
             //establish input
-            Scanner console = new Scanner(System.in);
+           Scanner console = new Scanner(System.in);
 
             //booleans for chceking the state of the players location and turn
             boolean moving = false;
@@ -67,10 +87,12 @@ public class Board {
             boolean moveChoice = false;
 
             //initial variables for choice loop
-            String choice;
+            //String choice = null;
             boolean choiceNotValid = true;
 
+
             while(choiceNotValid){
+                choiceMade = false;
 
                 System.out.println("Available actions: \n");
                 if(!(current.getRole() == (null))){
@@ -113,8 +135,22 @@ public class Board {
                 System.out.println(current.getName() + "'s turn: What would you like to do?\n");
 
                 //get and save player input
-                String command = console.next();
-                choice = console.nextLine();
+                //String command = console.next();
+                /*
+                while (command.equals("") || choice.equals("")) {
+
+                    System.out.println(command);
+                    System.out.println(choice);
+
+
+                }
+                */
+                while(!choiceMade){System.out.print("");}
+
+
+
+
+                //choice = console.nextLine();
 
                 //call act if player types 'Act'
                 if((command.equals("Act")) &&(inRole)){
@@ -133,6 +169,7 @@ public class Board {
                     moveChoice = true;
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
+                    System.out.println("LLLLLLLLLLLLLLL");
 
                     //if the player rehearses successfully, pop out of the loop
                     if(current.rehearse(card)){
@@ -147,6 +184,7 @@ public class Board {
 
 
                     System.out.println(choice);
+
 
                     //grab the neighbors of the players current room
                     String[] adjacent = current.getRoom().getNeighbors();
@@ -167,6 +205,7 @@ public class Board {
                             mov = true;
 
                             System.out.println("Successful move!\n");
+                            choiceNotValid = false;
 
                             //set booleans to indicate if player is NOW in casting office or trialer
                             if (choice.contains("office")) {
@@ -233,6 +272,7 @@ public class Board {
                 //skip the current players turn if they type end
                 }else if(command.equals("end")){
                     choiceNotValid = false;
+                    System.out.println(choice);
                 }
 
                 //if the choice is not valid print an error and ask them to try again
@@ -602,6 +642,7 @@ public class Board {
             Player player = new Player("Player " + i);
             Room trailer = getRoom("trailer");
 
+
             System.out.println(player.getName());
 
             player.updateRoom(trailer);
@@ -628,6 +669,23 @@ public class Board {
 
     public ArrayList<Set> getSets(){
         return this.sets;
+    }
+
+    public static Player getCurPlayer() {
+        return curPlayer;
+    }
+
+    public static void setCommand(String nCommand) {
+        command = nCommand;
+    }
+
+    public static void setChoice(String nChoice) {
+        choice = nChoice;
+        choiceMade = true;
+    }
+
+    public static void setChoiceMade(boolean c) {
+        choiceMade = c;
     }
 
 
