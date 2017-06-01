@@ -128,8 +128,12 @@ public class View {
         System.out.println("");
     }
 
+
     /*
     public static void displayStartMSG(){
+
+    public static void displayStartMSG(){
+
 
         //print greeting message
         System.out.println("DEADWOOD:\n");
@@ -148,5 +152,7 @@ public class View {
         System.out.println("   -If there are 6 players, start each player with 4 credits");
         System.out.println("   -If there are 7 or 8 players, start each player with the rank of 2\n");
     }
+
     */
+
 }
