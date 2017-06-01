@@ -1,7 +1,6 @@
 package view;
 
-import model.Board;
-import model.Player;
+import model.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+
+import static model.Board.getSet;
 
 
 public class BoardLayersListener extends JFrame {
@@ -30,6 +31,8 @@ public class BoardLayersListener extends JFrame {
     static JLabel curCash;
     static JLabel curRank;
     static JLabel curLocation;
+    static JLabel curRole;
+    static JLabel curRehearsePoints;
 
 
 
@@ -159,6 +162,14 @@ public class BoardLayersListener extends JFrame {
         curLocation.setBounds(1210, 140, 300, 50);
         bPane.add(curLocation, new Integer(1));
 
+        curRole = new JLabel("Location : ");
+        curRole.setBounds(1210, 175, 300, 50);
+        bPane.add(curRole, new Integer(1));
+
+        curRehearsePoints = new JLabel("Rehearse Points : 0");
+        curRehearsePoints.setBounds(1210, 210, 300, 50);
+        bPane.add(curRehearsePoints, new Integer(1));
+
     }
 
 
@@ -175,18 +186,32 @@ public class BoardLayersListener extends JFrame {
             }
             else if (e.getSource() == bRehearse) {
                 System.out.println("Rehearse is selected\n");
+                board.setCommand("Rehearse");
+                board.setChoiceMade(true);
             }
             else  if (e.getSource() == bMove) {
                 System.out.println("Move is selected\n");
                 board.setCommand("move");
                 try {
-                    displayRoomChoices(board);
+                    if (currentPlayer.getRole() == null) {
+                        displayRoomChoices(board);
+                    }
+
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }
             else  if (e.getSource() == bTakeRole) {
                 System.out.println("Take role is selected\n");
+                board.setCommand("work");
+                try {
+                    if (currentPlayer.getRole() == null) {
+                        displayRoleChoices(board);
+                    }
+
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
             else  if (e.getSource() == bUpgrade) {
                 System.out.println("Upgrade is selected\n");
@@ -342,85 +367,110 @@ public class BoardLayersListener extends JFrame {
     }
 
 
-/*
+
 
     public static void displayRoleChoices(model.Board model) throws Exception{
 
         JFrame frame = new JFrame("Role Choices");
 
         JPanel panel = new JPanel();
-        JLabel title = new JLabel("Which Room Would You Like To Move To");
+        JLabel title = new JLabel("Which Role Would You Like To Take");
 
-        String[] neighbors = currentPlayer.getRoom().getNeighbors();
+        //String[] neighbors = currentPlayer.getRoom().getNeighbors();
+        Set set = getSet(currentPlayer.getRoom().getName());
+        SceneCard scene = set.getScene();
 
-        //int i = 0;
-        //while (neighbors[i] != null && i < neighbors.length) {
-        JButton button1 = new JButton(neighbors[0]);
+        model.Role[] setRoles = set.getRoles();
 
-        button1.setBounds(100, 40, 400, 30);
-        panel.add(button1);
-        button1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Player curPlayer = Board.getCurPlayer();
-                curPlayer.updateRoom(Board.getRoom(neighbors[0]));
-                board.setChoice(neighbors[0]);
-                System.out.println(neighbors[0] + " selected");
-                frame.setVisible(false);
-                frame.dispose();
+        //look through the set roles to see if their choice was valid
+        for(int i = 0; i < setRoles.length; i++) {
+
+            if (setRoles[i] == null) {
+                break;
             }
-        });
-        //i++;
-
-        JButton button2 = new JButton(neighbors[1]);
-
-        button2.setBounds(100, 80, 400, 30);
-        panel.add(button2);
-        button2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Player curPlayer = Board.getCurPlayer();
-                curPlayer.updateRoom(Board.getRoom(neighbors[1]));
-                board.setChoice(neighbors[1]);
-                System.out.println(neighbors[1] + " selected");
-                frame.setVisible(false);
-                frame.dispose();
-            }
-        });
-
-
-        JButton button3 = new JButton(neighbors[2]);
-
-        button3.setBounds(100, 120, 400, 30);
-        panel.add(button3);
-        button3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Player curPlayer = Board.getCurPlayer();
-                curPlayer.updateRoom(Board.getRoom(neighbors[2]));
-                board.setChoice(neighbors[2]);
-                System.out.println(neighbors[2] + " selected");
-                frame.setVisible(false);
-                frame.dispose();
-            }
-        });
-
-
-        if (neighbors.length == 4) {
-            JButton button4 = new JButton(neighbors[3]);
-
-            button4.setBounds(100, 120, 400, 30);
-            panel.add(button4);
-            button4.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    Player curPlayer = Board.getCurPlayer();
-                    curPlayer.updateRoom(Board.getRoom(neighbors[3]));
-                    model.setChoice(neighbors[3]);
-                    System.out.println(neighbors[3] + " selected");
-                    frame.setVisible(false);
-                    frame.dispose();
-                }
-            });
         }
 
 
+        //int i = 0;
+        //while (neighbors[i] != null && i < neighbors.length) {
+
+        if (setRoles[0] != null) {
+            if (setRoles[0].getRank() <= currentPlayer.getRank()) {
+                JButton button1 = new JButton(setRoles[0].getName());
+
+                button1.setBounds(100, 40, 400, 30);
+                panel.add(button1);
+                button1.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Player curPlayer = Board.getCurPlayer();
+                        curPlayer.setRole(setRoles[0]);
+                        board.setChoice(setRoles[0].getName());
+                        System.out.println(setRoles[0].getName() + " selected");
+                        frame.setVisible(false);
+                        frame.dispose();
+                    }
+                });
+            }
+        }
+
+        if (setRoles[1] != null) {
+            if (setRoles[1].getRank() <= currentPlayer.getRank()) {
+
+                JButton button2 = new JButton(setRoles[1].getName());
+
+                button2.setBounds(100, 80, 400, 30);
+                panel.add(button2);
+                button2.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Player curPlayer = Board.getCurPlayer();
+                        curPlayer.setRole(setRoles[1]);
+                        board.setChoice(setRoles[1].getName());
+                        System.out.println(setRoles[1].getName() + " selected");
+                        frame.setVisible(false);
+                        frame.dispose();
+                    }
+                });
+            }
+        }
+
+        if (setRoles[2] != null) {
+            if (setRoles[2].getRank() <= currentPlayer.getRank()) {
+                JButton button3 = new JButton(setRoles[2].getName());
+
+                button3.setBounds(100, 120, 400, 30);
+                panel.add(button3);
+                button3.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Player curPlayer = Board.getCurPlayer();
+                        curPlayer.setRole(setRoles[2]);
+                        board.setChoice(setRoles[2].getName());
+                        System.out.println(setRoles[2].getName() + " selected");
+                        frame.setVisible(false);
+                        frame.dispose();
+                    }
+                });
+            }
+        }
+
+
+        if (setRoles[3] != null) {
+            if (setRoles[3].getRank() <= currentPlayer.getRank()) {
+                JButton button3 = new JButton(setRoles[2].getName());
+
+                button3.setBounds(100, 120, 400, 30);
+                panel.add(button3);
+                button3.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Player curPlayer = Board.getCurPlayer();
+                        curPlayer.setRole(setRoles[2]);
+                        board.setChoice(setRoles[2].getName());
+                        System.out.println(setRoles[2].getName() + " selected");
+                        frame.setVisible(false);
+                        frame.dispose();
+                    }
+                });
+            }
+        }
 
 
 
@@ -440,7 +490,7 @@ public class BoardLayersListener extends JFrame {
 
     }
 
-*/
+
 
 
 
@@ -459,6 +509,24 @@ public class BoardLayersListener extends JFrame {
 
     public static void setCurrentLocation(Player currentPlayer) {
         curLocation.setText(String.format("Location : %s", currentPlayer.getRoom().getName()));
+    }
+
+    public static void setCurrentRole(Player currentPlayer) {
+        if (currentPlayer.getRole() != null) {
+            curRole.setText(String.format("Role : %s", currentPlayer.getRole().getName()));
+        } else {
+            curRole.setText(String.format( "Not on a role"));
+        }
+
+    }
+
+    public static void setCurrentRehearsePoints(Player currentPlayer) {
+        if (currentPlayer.getRole() != null) {
+            curRehearsePoints.setText(String.format( "Rehearse Points: %s", currentPlayer.getRole().getRehearseBonus()));
+        } else {
+            curRehearsePoints.setText(String.format( "Rehearse Points: 0"));
+        }
+
     }
 
 
