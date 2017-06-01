@@ -90,8 +90,4 @@ public class Set extends Room {
         return this.shotTokens;
     }
 
-    public int[] getArea(){
-        return this.area;
-    }
-
 }

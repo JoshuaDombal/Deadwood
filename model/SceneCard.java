@@ -12,8 +12,6 @@ public class SceneCard {
     private Role[] roles;
     private int sceneNumber;
     private boolean played = false;
-    private boolean facedown = true;
-    private boolean sceneDone = false;
 
 
     public SceneCard(String name, int numRoles, int budget, Role[] roles, int sceneNumber) {
@@ -110,18 +108,6 @@ public class SceneCard {
 
     public boolean checkIfPlayed(){
         return played;
-    }
-
-    public boolean checkFacedown(){
-        return this.facedown;
-    }
-
-    public void flipCard(){
-        this.facedown = false;
-    }
-
-    public boolean checkIfDone(){
-        return sceneDone;
     }
 
 }
