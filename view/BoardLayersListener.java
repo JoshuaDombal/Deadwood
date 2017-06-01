@@ -33,6 +33,7 @@ public class BoardLayersListener extends JFrame {
     static JLabel curLocation;
     static JLabel curRole;
     static JLabel curRehearsePoints;
+    static JLabel cardLabel;
 
 
 
@@ -46,7 +47,7 @@ public class BoardLayersListener extends JFrame {
 
 
     // JLayeredPane
-    JLayeredPane bPane;
+    static JLayeredPane bPane;
 
 
 
@@ -170,6 +171,39 @@ public class BoardLayersListener extends JFrame {
         curRehearsePoints.setBounds(1210, 210, 300, 50);
         bPane.add(curRehearsePoints, new Integer(1));
 
+    }
+
+
+    public static void displaySceneCard(model.Set set) throws Exception{
+        model.SceneCard card = set.getScene();
+        int[] cardArea = set.getArea();
+        int sceneNumber = card.getSceneNumber();
+        String fileName;
+
+        if(card.checkFacedown()){
+            fileName = "faceDown.png";
+        }else{
+            if(sceneNumber < 10){
+                fileName = "0" + sceneNumber + ".png";
+            }else{
+                fileName = sceneNumber + ".png";
+            }
+        }
+
+        cardLabel = new JLabel();
+        ImageIcon cIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream(fileName)));
+        //ImageIcon cIcon = new ImageIcon(ImageIO.read(new File(fileName)));
+        //ImageIcon cIcon = new ImageIcon(fileName);
+        cardLabel.setIcon(cIcon);
+        cardLabel.setBounds(cardArea[0],cardArea[1],cardArea[3],cardArea[2]);
+        if(!card.checkIfDone()){
+            //cardLabel.setOpaque(false);
+            cardLabel.setVisible(true);
+        }else{
+            cardLabel.setVisible(false);
+        }
+
+        bPane.add(cardLabel, new Integer(1));
     }
 
 
