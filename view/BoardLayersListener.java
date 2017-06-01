@@ -1,28 +1,35 @@
 package view;
 
-import javax.swing.JLayeredPane;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
+import model.Board;
+import model.Player;
+
 import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.IOException;
 
 
 public class BoardLayersListener extends JFrame {
+
+
+    private static model.Player currentPlayer;
+
+    private static model.Board board;
 
 
     // JLabels
     JLabel boardlabel;
 
     // Side panel text
-    JLabel curPlayer;
-    JLabel curCredits;
-    JLabel curCash;
-    JLabel curRank;
-    JLabel curLocation;
+    static JLabel curPlayer;
+    static JLabel curCredits;
+    static JLabel curCash;
+    static JLabel curRank;
+    static JLabel curLocation;
 
 
 
@@ -30,6 +37,9 @@ public class BoardLayersListener extends JFrame {
     JButton bAct;
     JButton bRehearse;
     JButton bMove;
+    JButton bTakeRole;
+    JButton bUpgrade;
+    JButton bEnd;
 
 
     // JLayeredPane
@@ -39,13 +49,18 @@ public class BoardLayersListener extends JFrame {
 
     // Constructor
 
-    public BoardLayersListener(model.Board model) throws IOException {
+    public BoardLayersListener(Board model) throws IOException {
+
+
         // Set the title of the JFrame
         super("Deadwood");
         // Set the exit option for the JFrame
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         // Create the JLAyeredPan to hold the diplay, cards, role dice and buttons
+
+
+        this.board = model;
 
         bPane = getLayeredPane();
         // Create the deadwood board
@@ -67,9 +82,11 @@ public class BoardLayersListener extends JFrame {
         // Add a scene card to this room
 
 
+
+
         // Act Button
         bAct = new JButton("ACT");
-        bAct.setBackground(Color.blue);
+        bAct.setBackground(Color.cyan);
         bAct.setBounds(icon.getIconWidth()+10, 250, 140, 20);
         bAct.addMouseListener(new boardMouseListener());
 
@@ -77,7 +94,7 @@ public class BoardLayersListener extends JFrame {
 
 
         // Rehearse Button
-        bRehearse = new JButton("Rehearse");
+        bRehearse = new JButton("REHEARSE");
         bRehearse.setBackground(Color.yellow);
         bRehearse.setBounds(icon.getIconWidth()+10, 300, 140, 20);
         bRehearse.addMouseListener(new boardMouseListener());
@@ -86,18 +103,43 @@ public class BoardLayersListener extends JFrame {
 
 
         // Move Button
-        bMove = new JButton("Move");
+        bMove = new JButton("MOVE");
         bMove.setBackground(Color.green);
         bMove.setBounds(icon.getIconWidth()+10, 350, 140, 20);
         bMove.addMouseListener(new boardMouseListener());
 
         bPane.add(bMove, new Integer(2));
 
+        // Take Role Button
+        bTakeRole = new JButton("TAKE ROLE");
+        bTakeRole.setBackground(Color.red);
+        bTakeRole.setBounds(icon.getIconWidth()+10, 400, 140, 20);
+        bTakeRole.addMouseListener(new boardMouseListener());
+
+        bPane.add(bTakeRole, new Integer(2));
+
+        // Upgrade Button
+        bUpgrade = new JButton("UPGRADE");
+        bUpgrade.setBackground(Color.cyan);
+        bUpgrade.setBounds(icon.getIconWidth()+10, 450, 140, 20);
+        bUpgrade.addMouseListener(new boardMouseListener());
+
+        bPane.add(bUpgrade, new Integer(2));
+
+        // End Turn Button
+        bEnd = new JButton("END TURN");
+        bEnd.setBackground(Color.green);
+        bEnd.setBounds(icon.getIconWidth()+10, 500, 140, 20);
+        bEnd.addMouseListener(new boardMouseListener());
+
+        bPane.add(bEnd, new Integer(2));
 
 
 
 
-        curPlayer = new JLabel("Current Player : " );
+        //String playerName =
+
+        curPlayer = new JLabel("Current Player : " + model.getCurPlayer().getName() );
         curPlayer.setBounds(1210, 0, 300, 50);
         bPane.add(curPlayer, new Integer(1));
 
@@ -119,6 +161,7 @@ public class BoardLayersListener extends JFrame {
 
     }
 
+
     class boardMouseListener implements MouseListener {
 
         // Code for the different button clicks
@@ -126,12 +169,34 @@ public class BoardLayersListener extends JFrame {
 
             if (e.getSource() == bAct) {
                 System.out.println("Acting is selected\n");
+                board.setCommand("Act");
+
+
             }
             else if (e.getSource() == bRehearse) {
                 System.out.println("Rehearse is selected\n");
             }
-            else /* (e.getSource() == bMove)*/ {
+            else  if (e.getSource() == bMove) {
                 System.out.println("Move is selected\n");
+                board.setCommand("move");
+                try {
+                    displayRoomChoices(board);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+            else  if (e.getSource() == bTakeRole) {
+                System.out.println("Take role is selected\n");
+            }
+            else  if (e.getSource() == bUpgrade) {
+                System.out.println("Upgrade is selected\n");
+            }
+            else  if (e.getSource() == bEnd) {
+                System.out.println("End is selected\n");
+                board.setCommand("end");
+                board.setChoiceMade(true);
+            } else {
+                System.out.println("No action");
             }
         }
 
@@ -153,6 +218,248 @@ public class BoardLayersListener extends JFrame {
         }
     }
 
+    public static void setCurrentPlayer(Player currentPlayer) {
+        String color;
+        BoardLayersListener.currentPlayer = currentPlayer;
+        if (currentPlayer.getColor() == 'b') {
+            color  = "blue";
+            //'b', 'c', 'g', 'o', 'p', 'r', 'v', 'y'};
+        } else if (currentPlayer.getColor() == 'c') {
+            color = "cyan";
+        } else if (currentPlayer.getColor() == 'g') {
+            color = "green";
+        } else if (currentPlayer.getColor() == 'o') {
+            color = "orange";
+        } else if (currentPlayer.getColor() == 'p') {
+            color = "purple";
+        } else if (currentPlayer.getColor() == 'r') {
+            color = "red";
+        } else if (currentPlayer.getColor() == 'v') {
+            color = "violet";
+        } else if (currentPlayer.getColor() == 'y') {
+            color = "yellow";
+        } else {
+            color = "   ";
+        }
+        curPlayer.setText(String.format("Current Player : %s", color));
+    }
+
+
+    public static void displayRoomChoices(model.Board model) throws Exception{
+
+        JFrame frame = new JFrame("Room Choices");
+
+        JPanel panel = new JPanel();
+        JLabel title = new JLabel("Which Room Would You Like To Move To");
+
+        String[] neighbors = currentPlayer.getRoom().getNeighbors();
+
+        //int i = 0;
+        //while (neighbors[i] != null && i < neighbors.length) {
+            JButton button1 = new JButton(neighbors[0]);
+
+            button1.setBounds(100, 40, 400, 30);
+            panel.add(button1);
+            button1.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Player curPlayer = Board.getCurPlayer();
+                    curPlayer.updateRoom(Board.getRoom(neighbors[0]));
+                    board.setChoice(neighbors[0]);
+                    System.out.println(neighbors[0] + " selected");
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            });
+            //i++;
+
+            JButton button2 = new JButton(neighbors[1]);
+
+            button2.setBounds(100, 80, 400, 30);
+            panel.add(button2);
+            button2.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Player curPlayer = Board.getCurPlayer();
+                    curPlayer.updateRoom(Board.getRoom(neighbors[1]));
+                    board.setChoice(neighbors[1]);
+                    System.out.println(neighbors[1] + " selected");
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            });
+
+
+            JButton button3 = new JButton(neighbors[2]);
+
+            button3.setBounds(100, 120, 400, 30);
+            panel.add(button3);
+            button3.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Player curPlayer = Board.getCurPlayer();
+                    curPlayer.updateRoom(Board.getRoom(neighbors[2]));
+                    board.setChoice(neighbors[2]);
+                    System.out.println(neighbors[2] + " selected");
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            });
+
+
+            if (neighbors.length == 4) {
+                JButton button4 = new JButton(neighbors[3]);
+
+                button4.setBounds(100, 120, 400, 30);
+                panel.add(button4);
+                button4.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Player curPlayer = Board.getCurPlayer();
+                        curPlayer.updateRoom(Board.getRoom(neighbors[3]));
+                        model.setChoice(neighbors[3]);
+                        System.out.println(neighbors[3] + " selected");
+                        frame.setVisible(false);
+                        frame.dispose();
+                    }
+                });
+            }
+
+
+
+
+
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+
+        title.setBounds(190, 10, 400, 30);
+        panel.setLayout(null);
+        panel.add(title);
+
+
+
+        frame.add(panel);
+        frame.setVisible(true);
+
+
+    }
+
+
+/*
+
+    public static void displayRoleChoices(model.Board model) throws Exception{
+
+        JFrame frame = new JFrame("Role Choices");
+
+        JPanel panel = new JPanel();
+        JLabel title = new JLabel("Which Room Would You Like To Move To");
+
+        String[] neighbors = currentPlayer.getRoom().getNeighbors();
+
+        //int i = 0;
+        //while (neighbors[i] != null && i < neighbors.length) {
+        JButton button1 = new JButton(neighbors[0]);
+
+        button1.setBounds(100, 40, 400, 30);
+        panel.add(button1);
+        button1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Player curPlayer = Board.getCurPlayer();
+                curPlayer.updateRoom(Board.getRoom(neighbors[0]));
+                board.setChoice(neighbors[0]);
+                System.out.println(neighbors[0] + " selected");
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+        //i++;
+
+        JButton button2 = new JButton(neighbors[1]);
+
+        button2.setBounds(100, 80, 400, 30);
+        panel.add(button2);
+        button2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Player curPlayer = Board.getCurPlayer();
+                curPlayer.updateRoom(Board.getRoom(neighbors[1]));
+                board.setChoice(neighbors[1]);
+                System.out.println(neighbors[1] + " selected");
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+
+        JButton button3 = new JButton(neighbors[2]);
+
+        button3.setBounds(100, 120, 400, 30);
+        panel.add(button3);
+        button3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Player curPlayer = Board.getCurPlayer();
+                curPlayer.updateRoom(Board.getRoom(neighbors[2]));
+                board.setChoice(neighbors[2]);
+                System.out.println(neighbors[2] + " selected");
+                frame.setVisible(false);
+                frame.dispose();
+            }
+        });
+
+
+        if (neighbors.length == 4) {
+            JButton button4 = new JButton(neighbors[3]);
+
+            button4.setBounds(100, 120, 400, 30);
+            panel.add(button4);
+            button4.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    Player curPlayer = Board.getCurPlayer();
+                    curPlayer.updateRoom(Board.getRoom(neighbors[3]));
+                    model.setChoice(neighbors[3]);
+                    System.out.println(neighbors[3] + " selected");
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            });
+        }
+
+
+
+
+
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+
+        title.setBounds(190, 10, 400, 30);
+        panel.setLayout(null);
+        panel.add(title);
+
+
+
+        frame.add(panel);
+        frame.setVisible(true);
+
+
+    }
+
+*/
+
+
+
+
+    public static void setCurrentCredits(Player currentPlayer) {
+        curCredits.setText(String.format("Credits : %s", currentPlayer.getCredits()));
+    }
+
+    public static void setCurrentCash(Player currentPlayer) {
+        curCash.setText(String.format("Cash : %s", currentPlayer.getCash()));
+    }
+
+    public static void setCurrentRank(Player currentPlayer) {
+        curRank.setText(String.format("Rank : %s", currentPlayer.getRank()));
+    }
+
+    public static void setCurrentLocation(Player currentPlayer) {
+        curLocation.setText(String.format("Location : %s", currentPlayer.getRoom().getName()));
+    }
 
 
 
