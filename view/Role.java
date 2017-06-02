@@ -3,9 +3,11 @@ package view;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.imageio.ImageIO;
+import javax.swing.JLayeredPane;
+import java.io.File;
 
 public class Role
-    extends javax.swing.JLayeredPane
+    extends JLayeredPane
     implements model.Role.Listener
 {
 
@@ -23,13 +25,13 @@ public class Role
         changed(r);
     }
 
-    private static ImageIcon getIcon(Player player){
-        String file = (player.getColor() + player.getRank() + ".png");
+    private static ImageIcon getIcon(model.Player player){
+        //String file = (player.getColor() + player.getRank() + ".png");
 
         ImageIcon icon = null;
         try{
             Class cls = Role.class;
-            icon = new ImageIcon(ImageIO.read(cls.getResourcesAsStream(file)));
+            icon = new ImageIcon(ImageIO.read(new File(String.format("%c%d.png",  player.getColor(), player.getRank()))));
         }catch (Exception e){
             e.printStackTrace();
             System.exit(1);
@@ -44,4 +46,5 @@ public class Role
 
         dice.setVisible(r.checkForPlayer());
     }
+
 }
