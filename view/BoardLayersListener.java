@@ -35,6 +35,8 @@ public class BoardLayersListener extends JFrame {
     static JLabel curRehearsePoints;
     static JLabel cardLabel;
 
+    private static int layerCount = 1;
+
 
 
     // JButtons
@@ -189,6 +191,7 @@ public class BoardLayersListener extends JFrame {
                 fileName = sceneNumber + ".png";
             }
         }
+        System.out.println("Image: " + fileName);
 
         cardLabel = new JLabel();
         ImageIcon cIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream(fileName)));
@@ -203,7 +206,14 @@ public class BoardLayersListener extends JFrame {
             cardLabel.setVisible(false);
         }
 
-        bPane.add(cardLabel, new Integer(1));
+        bPane.add(cardLabel, new Integer(layerCount));
+        layerCount++;
+    }
+
+    public static void displayTakes(model.Set set) throws Exception{
+        model.Take[] takes = set.getTakes();
+        int takesLeft = set.getNumTokens();
+
     }
 
 
@@ -215,6 +225,7 @@ public class BoardLayersListener extends JFrame {
             if (e.getSource() == bAct) {
                 System.out.println("Acting is selected\n");
                 board.setCommand("Act");
+                board.setChoiceMade(true);
 
 
             }
@@ -405,121 +416,128 @@ public class BoardLayersListener extends JFrame {
 
     public static void displayRoleChoices(model.Board model) throws Exception{
 
-        JFrame frame = new JFrame("Role Choices");
-
-        JPanel panel = new JPanel();
-        JLabel title = new JLabel("Which Role Would You Like To Take");
-
-        //String[] neighbors = currentPlayer.getRoom().getNeighbors();
         Set set = getSet(currentPlayer.getRoom().getName());
         SceneCard scene = set.getScene();
 
-        model.Role[] setRoles = set.getRoles();
+        if (!(scene.checkIfDone())) {
+            JFrame frame = new JFrame("Role Choices");
 
-        //look through the set roles to see if their choice was valid
-        for(int i = 0; i < setRoles.length; i++) {
+            JPanel panel = new JPanel();
+            JLabel title = new JLabel("Which Role Would You Like To Take");
 
-            if (setRoles[i] == null) {
-                break;
+            //String[] neighbors = currentPlayer.getRoom().getNeighbors();
+
+
+            model.Role[] setRoles = set.getRoles();
+
+            //look through the set roles to see if their choice was valid
+            for(int i = 0; i < setRoles.length; i++) {
+
+                if (setRoles[i] == null) {
+                    break;
+                }
             }
+
+
+            //int i = 0;
+            //while (neighbors[i] != null && i < neighbors.length) {
+
+            if (setRoles[0] != null) {
+                if (setRoles[0].getRank() <= currentPlayer.getRank()) {
+                    JButton button1 = new JButton(setRoles[0].getName());
+
+                    button1.setBounds(100, 40, 400, 30);
+                    panel.add(button1);
+                    button1.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            Player curPlayer = Board.getCurPlayer();
+                            curPlayer.setRole(setRoles[0]);
+                            board.setChoice(setRoles[0].getName());
+                            System.out.println(setRoles[0].getName() + " selected");
+                            frame.setVisible(false);
+                            frame.dispose();
+                        }
+                    });
+                }
+            }
+
+            if (setRoles[1] != null) {
+                if (setRoles[1].getRank() <= currentPlayer.getRank()) {
+
+                    JButton button2 = new JButton(setRoles[1].getName());
+
+                    button2.setBounds(100, 80, 400, 30);
+                    panel.add(button2);
+                    button2.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            Player curPlayer = Board.getCurPlayer();
+                            curPlayer.setRole(setRoles[1]);
+                            board.setChoice(setRoles[1].getName());
+                            System.out.println(setRoles[1].getName() + " selected");
+                            frame.setVisible(false);
+                            frame.dispose();
+                        }
+                    });
+                }
+            }
+
+            if (setRoles[2] != null) {
+                if (setRoles[2].getRank() <= currentPlayer.getRank()) {
+                    JButton button3 = new JButton(setRoles[2].getName());
+
+                    button3.setBounds(100, 120, 400, 30);
+                    panel.add(button3);
+                    button3.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            Player curPlayer = Board.getCurPlayer();
+                            curPlayer.setRole(setRoles[2]);
+                            board.setChoice(setRoles[2].getName());
+                            System.out.println(setRoles[2].getName() + " selected");
+                            frame.setVisible(false);
+                            frame.dispose();
+                        }
+                    });
+                }
+            }
+
+
+            if (setRoles[3] != null) {
+                if (setRoles[3].getRank() <= currentPlayer.getRank()) {
+                    JButton button3 = new JButton(setRoles[2].getName());
+
+                    button3.setBounds(100, 120, 400, 30);
+                    panel.add(button3);
+                    button3.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            Player curPlayer = Board.getCurPlayer();
+                            curPlayer.setRole(setRoles[2]);
+                            board.setChoice(setRoles[2].getName());
+                            System.out.println(setRoles[2].getName() + " selected");
+                            frame.setVisible(false);
+                            frame.dispose();
+                        }
+                    });
+                }
+            }
+
+
+
+            frame.setResizable(false);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(600, 400);
+
+            title.setBounds(190, 10, 400, 30);
+            panel.setLayout(null);
+            panel.add(title);
+
+
+
+            frame.add(panel);
+            frame.setVisible(true);
+
         }
 
 
-        //int i = 0;
-        //while (neighbors[i] != null && i < neighbors.length) {
-
-        if (setRoles[0] != null) {
-            if (setRoles[0].getRank() <= currentPlayer.getRank()) {
-                JButton button1 = new JButton(setRoles[0].getName());
-
-                button1.setBounds(100, 40, 400, 30);
-                panel.add(button1);
-                button1.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        Player curPlayer = Board.getCurPlayer();
-                        curPlayer.setRole(setRoles[0]);
-                        board.setChoice(setRoles[0].getName());
-                        System.out.println(setRoles[0].getName() + " selected");
-                        frame.setVisible(false);
-                        frame.dispose();
-                    }
-                });
-            }
-        }
-
-        if (setRoles[1] != null) {
-            if (setRoles[1].getRank() <= currentPlayer.getRank()) {
-
-                JButton button2 = new JButton(setRoles[1].getName());
-
-                button2.setBounds(100, 80, 400, 30);
-                panel.add(button2);
-                button2.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        Player curPlayer = Board.getCurPlayer();
-                        curPlayer.setRole(setRoles[1]);
-                        board.setChoice(setRoles[1].getName());
-                        System.out.println(setRoles[1].getName() + " selected");
-                        frame.setVisible(false);
-                        frame.dispose();
-                    }
-                });
-            }
-        }
-
-        if (setRoles[2] != null) {
-            if (setRoles[2].getRank() <= currentPlayer.getRank()) {
-                JButton button3 = new JButton(setRoles[2].getName());
-
-                button3.setBounds(100, 120, 400, 30);
-                panel.add(button3);
-                button3.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        Player curPlayer = Board.getCurPlayer();
-                        curPlayer.setRole(setRoles[2]);
-                        board.setChoice(setRoles[2].getName());
-                        System.out.println(setRoles[2].getName() + " selected");
-                        frame.setVisible(false);
-                        frame.dispose();
-                    }
-                });
-            }
-        }
-
-
-        if (setRoles[3] != null) {
-            if (setRoles[3].getRank() <= currentPlayer.getRank()) {
-                JButton button3 = new JButton(setRoles[2].getName());
-
-                button3.setBounds(100, 120, 400, 30);
-                panel.add(button3);
-                button3.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        Player curPlayer = Board.getCurPlayer();
-                        curPlayer.setRole(setRoles[2]);
-                        board.setChoice(setRoles[2].getName());
-                        System.out.println(setRoles[2].getName() + " selected");
-                        frame.setVisible(false);
-                        frame.dispose();
-                    }
-                });
-            }
-        }
-
-
-
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, 400);
-
-        title.setBounds(190, 10, 400, 30);
-        panel.setLayout(null);
-        panel.add(title);
-
-
-
-        frame.add(panel);
-        frame.setVisible(true);
 
 
     }
