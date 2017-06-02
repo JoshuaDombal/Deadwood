@@ -57,11 +57,17 @@ public class BoardLayersListener extends JFrame {
     static JLabal take1S;
     static JLabal take2S;
     static JLabal take3S;
+    //player JLabels
+    static JLabal Player1;
+    static JLabal Player2;
+    static JLabal Player3;
+    static JLabal Player4;
+    static JLabal Player5;
+    static JLabal Player6;
+    static JLabal Player8;
 
 
     private static int layerCount = 1;
-
-
 
     // JButtons
     JButton bAct;
@@ -232,6 +238,47 @@ public class BoardLayersListener extends JFrame {
 
         bPane.add(cardLabel, new Integer(layerCount));
         layerCount++;
+    }
+
+    public static void loadPlayers() throws Exception{
+
+        Player1 = new JLabel();
+        Player2 = new JLabel();
+        Player3 = new JLabel();
+        Player4 = new JLabel();
+        Player5 = new JLabel();
+        Player6 = new JLabel();
+        Player7 = new JLabel();
+        Player8 = new JLabel();
+
+        ImageIcon bIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("b1.png")));
+        ImageIcon cIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("c1.png")));
+        ImageIcon gIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("g1.png")));
+        ImageIcon oIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("o1.png")));
+        ImageIcon pIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("p1.png")));
+        ImageIcon rIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("r1.png")));
+        ImageIcon vIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("v1.png")));
+        ImageIcon yIcon = new ImageIcon(ImageIO.read(BoardLayersListener.class.getResourceAsStream("y1.png")));
+
+        Player1.setIcon(bIcon);
+        Player2.setIcon(cIcon);
+        Player3.setIcon(gIcon);
+        Player4.setIcon(oIcon);
+        Player5.setIcon(pIcon);
+        Player6.setIcon(rIcon);
+        Player7.setIcon(vIcon);
+        Player8.setIcon(yIcon);
+
+        Player1.setBounds(1000,270,40,40);
+        Player2.setBounds(1020,270,40,40);
+        Player3.setBounds(1040,270,40,40);
+        Player4.setBounds(1060,270,40,40);
+        Player5.setBounds(1080,270,40,40);
+        Player6.setBounds(1100,270,40,40);
+        Player7.setBounds(1120,270,40,40);
+        Player8.setBounds(1140,270,40,40);
+
+
     }
 
     public static void updateTakes(model.Set set) throws Exception{
