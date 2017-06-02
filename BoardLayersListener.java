@@ -398,6 +398,31 @@ public class BoardLayersListener extends JFrame {
         take2S.setBounds(299,764,47,47);
         take3S.setBounds(244,764,47,47);
 
+        bPane.add(take1M, new Integer(1));
+        bPane.add(take2M, new Integer(1));
+        bPane.add(take3M, new Integer(1));
+        bPane.add(takeS1, new Integer(1));
+        bPane.add(takeS2, new Integer(1));
+        bPane.add(takeB1, new Integer(1));
+        bPane.add(takeC1, new Integer(1));
+        bPane.add(takeC2, new Integer(1));
+        bPane.add(takeH1, new Integer(1));
+        bPane.add(takeH2, new Integer(1));
+        bPane.add(takeH3, new Integer(1));
+        bPane.add(takeJ1, new Integer(1));
+        bPane.add(takeT1, new Integer(1));
+        bPane.add(takeT2, new Integer(1));
+        bPane.add(takeT3, new Integer(1));
+        bPane.add(takeG2, new Integer(1));
+        bPane.add(takeR1, new Integer(1));
+        bPane.add(takeR2, new Integer(1));
+        bPane.add(take1S, new Integer(1));
+        bPane.add(take2S, new Integer(1));
+        bPane.add(take3S, new Integer(1));
+
+        //BoardLayersListener.loadTakes(sets);
+        //BoardLayersListener.setAllTakes(true);
+
     }
 
 
