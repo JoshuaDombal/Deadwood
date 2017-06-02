@@ -169,7 +169,6 @@ public class Board {
                     moveChoice = true;
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
-                    System.out.println("LLLLLLLLLLLLLLL");
 
                     //if the player rehearses successfully, pop out of the loop
                     if(current.rehearse(card)){
@@ -181,9 +180,6 @@ public class Board {
 
                     //bool for location choice loop
                     boolean validLocation = false;
-
-
-                    System.out.println(choice);
 
 
                     //grab the neighbors of the players current room
@@ -205,17 +201,26 @@ public class Board {
                             mov = true;
 
                             System.out.println("Successful move!\n");
-                            choiceNotValid = false;
+
+
+
+
+                            //update player room and rooms player
+                            current.updateRoom(getRoom(adjacent[i]));
 
                             //set booleans to indicate if player is NOW in casting office or trialer
                             if (choice.contains("office")) {
                                 inCO = true;
                             } else if (choice.contains("trailer")) {
                                 inTrl = true;
+                            }else{
+                                Set set = getSet(current.getRoom().getName());
+                                SceneCard card = set.getScene();
+                                if(card.checkFacedown()){
+                                    card.flipCard();
+                                }
+                                BoardLayersListener.displaySceneCard(getSet(choice));
                             }
-
-                            //update player room and rooms player
-                            current.updateRoom(getRoom(adjacent[i]));
 
                             System.out.print("\n");
 

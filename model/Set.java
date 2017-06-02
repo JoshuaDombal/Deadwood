@@ -18,6 +18,7 @@ public class Set extends Room {
         this.shotTokens = shotTokens;
         this.shots = shotTokens;
         this.area = area;
+        this.takes = takes;
     }
 
     public void addScene(SceneCard scene) {
@@ -93,5 +94,7 @@ public class Set extends Room {
     public int[] getArea(){
         return this.area;
     }
+
+    public Take[] getTakes(){return this.takes;}
 
 }
