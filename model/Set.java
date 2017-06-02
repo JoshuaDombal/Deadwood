@@ -12,12 +12,13 @@ public class Set extends Room {
     private Take[] takes;
 
     public Set(String name, int shotTokens, int numRoles, Role[] roles, String[] neighbors, int[] area, Take[] takes){
-        super(name, neighbors);
+        super(name, neighbors, area);
         this.scene = scene;
         this.roles = roles;
         this.shotTokens = shotTokens;
         this.shots = shotTokens;
         this.area = area;
+        this.takes = takes;
     }
 
     public void addScene(SceneCard scene) {
@@ -39,6 +40,8 @@ public class Set extends Room {
             payActors();
 
         }
+
+        scene.setDone();
 
         Role[] cardRoles = scene.getRoles();
         scene = null;
@@ -93,5 +96,7 @@ public class Set extends Room {
     public int[] getArea(){
         return this.area;
     }
+
+    public Take[] getTakes(){return this.takes;}
 
 }

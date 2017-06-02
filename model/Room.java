@@ -7,10 +7,12 @@ public class Room {
     //private Room[] adjacent;
     private int roomIndex = 0;
     private String[] neighbors;
+    private int[] area;
 
-    public Room(String name, String[] neighbors) {
+    public Room(String name, String[] neighbors, int[] area) {
         this.name = name;
         this.neighbors = neighbors;
+        this.area = area;
     }
 
     public String[] getNeighbors(){
@@ -26,12 +28,4 @@ public class Room {
         this.roomIndex++;
     }
 
-    public boolean checkPlayer(String name){
-        for(int i = 0; i < 7; i++){
-            if(players[i].equals(name)){
-                return true;
-            }else{i++;}
-        }
-        return false;
-    }
 }

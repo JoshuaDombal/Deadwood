@@ -1,5 +1,7 @@
 package model;
 
+import view.BoardLayersListener;
+
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.*;
 
@@ -14,14 +16,17 @@ public class SceneCard {
     private boolean played = false;
     private boolean facedown = true;
     private boolean sceneDone = false;
+    private String cardImage;
 
-    public SceneCard(String name, int numRoles, int budget, Role[] roles, int sceneNumber) {
+
+    public SceneCard(String name, int numRoles, int budget, Role[] roles, int sceneNumber, String cardImage) {
       this.name = name;
       this.numRoles = numRoles;
       this.budget = budget;
       this.playersOnCard = false;
       this.roles = roles;
       this.sceneNumber = sceneNumber;
+      this.cardImage = cardImage;
     }
 
 
@@ -30,7 +35,6 @@ public class SceneCard {
     }
 
     public void bonusPayout() {
-        sceneDone = true;
         if (playersOnCard == false) {
             return;
         } else {
@@ -50,12 +54,22 @@ public class SceneCard {
             }
 
             // Gives players on scene card the appropriate bonus
+
             for (int i = 0; i < numRoles; i++) {
                 if (roles[i].checkForPlayer()) {
                     roles[i].getPlayer().updateCash(bonus[i]);
 
 
-                    System.out.println(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
+                    //System.out.println(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
+                    if(i == 0){
+                        BoardLayersListener.setMessage5(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
+                    }else if(i == 1){
+                        BoardLayersListener.setMessage6(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
+                    }else if(i == 2){
+                        BoardLayersListener.setMessage7(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
+                    }else if(i == 3){
+                        BoardLayersListener.setMessage8(roles[i].getPlayer().getName() + " was awarded " + bonus[i] + " dollars as a bonus!");
+                    }
 
                     // Removes role from Player class
                     roles[i].getPlayer().removeRole();
@@ -122,6 +136,14 @@ public class SceneCard {
 
     public boolean checkIfDone(){
         return sceneDone;
+    }
+
+    public String getImage(){
+        return this.cardImage;
+    }
+
+    public void setDone(){
+        this.sceneDone = true;
     }
 
 }

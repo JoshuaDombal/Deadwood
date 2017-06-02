@@ -1,5 +1,7 @@
 package model;
 
+import view.BoardLayersListener;
+
 import java.util.*;
 import java.util.Scanner;
 import java.lang.*;
@@ -18,7 +20,8 @@ import javax.swing.SwingConstants;
 import javax.imageio.ImageIO;
 import java.io.File;
 import javax.swing.ImageIcon;
-import view.BoardLayersListener;
+
+import static view.BoardLayersListener.*;
 
 
 public class Board {
@@ -39,6 +42,11 @@ public class Board {
     private static ArrayList<Room> rooms;
     private static ArrayList<Set> sets;
 
+    private static Player curPlayer = new Player("null");
+    private static String command = "";
+    private static String choice = "";
+    private static boolean choiceMade;
+
 
 
     //Outlines the basic loop of gameplay
@@ -49,33 +57,56 @@ public class Board {
             -present them with appropriate options and information for their turn
             -take input of there choice, check if it is valid, call corresponding method for choice
     */
-    public static void playGame() throws Exception{
+    public static void playGame() throws Exception {
 
         for(int i = 0; i < sets.size(); i++){
             BoardLayersListener.displaySceneCard(sets.get(i));
         }
 
+        BoardLayersListener.loadTakes(sets);
+        BoardLayersListener.setAllTakes(true);
+        BoardLayersListener.loadPlayers();
+
+
         while(scenesRemaining > 1){
 
             //pop player from queue
             Player current = players.remove();
+            BoardLayersListener.setCurrentPlayer(current);
+            BoardLayersListener.setCurrentCredits(current);
+            BoardLayersListener.setCurrentCash(current);
+            BoardLayersListener.setCurrentRank(current);
+            BoardLayersListener.setCurrentLocation(current);
+            BoardLayersListener.setCurrentRole(current);
+            BoardLayersListener.setCurrentRehearsePoints(current);
+            BoardLayersListener.setCurDays(current);
 
             System.out.println(current.getName());
 
             //establish input
-            Scanner console = new Scanner(System.in);
+           Scanner console = new Scanner(System.in);
 
-            //booleans for chceking the state of the players location and turn
+            //booleans for checking the state of the players location and turn
             boolean moving = false;
             boolean inRole, inCO, mov, inTrl;
             inRole = inCO = mov = inTrl = false;
             boolean moveChoice = false;
 
             //initial variables for choice loop
-            String choice;
+            //String choice = null;
             boolean choiceNotValid = true;
 
+
             while(choiceNotValid){
+                choiceMade = false;
+                BoardLayersListener.setCurrentPlayer(current);
+                BoardLayersListener.setCurrentCredits(current);
+                BoardLayersListener.setCurrentCash(current);
+                BoardLayersListener.setCurrentRank(current);
+                BoardLayersListener.setCurrentLocation(current);
+                BoardLayersListener.setCurrentRole(current);
+                BoardLayersListener.setCurrentRehearsePoints(current);
+                //BoardLayersListener.setCurrentScene(current);
 
                 System.out.println("Available actions: \n");
                 if(!(current.getRole() == (null))){
@@ -85,7 +116,8 @@ public class Board {
                     System.out.println("    -Act\n");
                     System.out.println("    -Rehearse\n");
                     System.out.println("    -end\n");
-                }else if((current.getRoom().getName().equals("office")) && (!mov)){
+                    System.out.println(getSet(current.getRoom().getName()).getScene().getName());
+                }else if((current.getRoom().getName().equals("office"))){
                     inCO = true;
                     System.out.println("    -who\n");
                     System.out.println("    -Where\n");
@@ -118,24 +150,50 @@ public class Board {
                 System.out.println(current.getName() + "'s turn: What would you like to do?\n");
 
                 //get and save player input
-                String command = console.next();
-                choice = console.nextLine();
+                //String command = console.next();
+                /*
+                while (command.equals("") || choice.equals("")) {
 
-                //call act if player types 'Act'
-                if((command.equals("Act")) &&(inRole)){
+                    System.out.println(command);
+                    System.out.println(choice);
+
+
+                }
+                */
+                while(!choiceMade){System.out.print("");}
+
+
+                System.out.println(inRole);
+
+                //choice = console.nextLine();
+                if((command.equals("move")) && (mov)){
+                    moveChoice = true;
+                    BoardLayersListener.clearMessages();
+                    BoardLayersListener.setMessage1("Cannot move twice in one turn");
+                }else if((!inRole) && (command.equals("Act"))){
+                    BoardLayersListener.clearMessages();
+                    BoardLayersListener.setMessage1("Cannot act while not working");
+                    moveChoice = true;
+                }else if((command.equals("Act")) && (inRole)){
+
                     moveChoice = true;
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
                     current.act(card, set);
-
                     if (set.getNumTokens() == 0) {
+                        BoardLayersListener.finishScene(current);
+                        card.setDone();
+                        BoardLayersListener.displaySceneCard(set);
                         set.endScene(current);
+
+
                     }
                     choiceNotValid = false;
 
                 //call rehearse if player types 'Rehearse'
                 }else if((command.equals("Rehearse")) && (inRole)){
                     moveChoice = true;
+                    //System.out.println("***********");
                     Set set = getSet(current.getRoom().getName());
                     SceneCard card = set.getScene();
 
@@ -150,8 +208,6 @@ public class Board {
                     //bool for location choice loop
                     boolean validLocation = false;
 
-
-                    System.out.println(choice);
 
                     //grab the neighbors of the players current room
                     String[] adjacent = current.getRoom().getNeighbors();
@@ -171,17 +227,29 @@ public class Board {
                             //set bool indicating that player is moving and choice is valid
                             mov = true;
 
-                            System.out.println("Successful move!\n");
+                            //System.out.println("Successful move!\n");
+
+                            //update player room and rooms player
+                            current.updateRoom(getRoom(adjacent[i]));
+
+                            BoardLayersListener.movePlayer(current.getName(),current.getRoom().getName());
+
+                            BoardLayersListener.clearMessages();
+                            BoardLayersListener.setMessage1(current.getName() + " moved to " + current.getRoom().getName() + "!");
 
                             //set booleans to indicate if player is NOW in casting office or trialer
                             if (choice.contains("office")) {
                                 inCO = true;
                             } else if (choice.contains("trailer")) {
                                 inTrl = true;
+                            }else{
+                                Set set = getSet(current.getRoom().getName());
+                                SceneCard card = set.getScene();
+                                if(card.checkFacedown()){
+                                    card.flipCard();
+                                }
+                                BoardLayersListener.displaySceneCard(getSet(choice));
                             }
-
-                            //update player room and rooms player
-                            current.updateRoom(getRoom(adjacent[i]));
 
                             System.out.print("\n");
 
@@ -199,18 +267,23 @@ public class Board {
                     }
 
                 //if choice equals upgrade, call upgrade
-                }else if((command.equals("upgrade")) && (inCO) && (!mov)){
+
+                }else if((command.equals("upgrade")) && (inCO)){
 
                     moveChoice = true;
+                    //System.out.println("INNNNNNNNNNNN");
 
                     if(current.getRank() != 6){
                         if(current.upgrade(choice)){
-                            System.out.println("Player successfully upgraded to rank " + current.getRank() + "!\n");
+                            BoardLayersListener.setMessage1("Player successfully upgraded to rank " + current.getRank() + "!\n");
+                            //System.out.println("Player successfully upgraded to rank " + current.getRank() + "!\n");
                             choiceNotValid = false;
                         }
 
                     }else{
-                        System.out.println("\nCannot upgrade: Player already at max rank\n");
+                        //System.out.println("\nCannot upgrade: Player already at max rank\n");
+                        BoardLayersListener.clearMessages();
+                        BoardLayersListener.setMessage1(current.getName() + " arleady at max rank!");
                     }
 
                     // Cheat code to give the player max $ and cr
@@ -233,11 +306,15 @@ public class Board {
                     if(work(current, choice)){
                         moveChoice = true;
                         choiceNotValid = false;
+
                     }
 
                 //skip the current players turn if they type end
                 }else if(command.equals("end")){
                     choiceNotValid = false;
+                    //System.out.println(choice);
+                    BoardLayersListener.clearMessages();
+                    BoardLayersListener.setMessage1(current.getName() + " ended their turn");
                 }
 
                 //if the choice is not valid print an error and ask them to try again
@@ -266,7 +343,9 @@ public class Board {
 
         //check if the scene is null
         if(scene == null){
-            System.out.println("Scene card is no longer in play\n");
+            //System.out.println("Scene card is no longer in play\n");
+            BoardLayersListener.clearMessages();
+            BoardLayersListener.setMessage1("Scene card is no longer in play");
         }else{
 
             Role[] setRoles = set.getRoles();
@@ -287,6 +366,10 @@ public class Board {
                         current.updateRole(setRoles[i]);
                         setRoles[i].addPlayer(current);
                         validRole = true;
+                        BoardLayersListener.moveToRole(current, getSet(current.getRoom().getName()), setRoles[i]);
+
+                        BoardLayersListener.clearMessages();
+                        BoardLayersListener.setMessage1(current.getName() + " is now working " + setRoles[i].getName());
 
                         //if the role is in the set but is occupied, print error and ask for input again via loop
                     }else if(!(setRoles[i].getRank() <= current.getRank())){
@@ -316,6 +399,9 @@ public class Board {
                         current.updateRole(cardRoles[i]);
                         cardRoles[i].addPlayer(current);
                         validRole = true;
+                        BoardLayersListener.moveToRole(current, getSet(current.getRoom().getName()), cardRoles[i]);
+                        BoardLayersListener.clearMessages();
+                        BoardLayersListener.setMessage1(current.getName() + " is now working " + setRoles[i].getName());
                     }else if(!(cardRoles[i].getRank() <= current.getRank())){
                         System.out.println("\nPlayer rank not high enough to take role\n");
                     }else{
@@ -363,6 +449,10 @@ public class Board {
             }
         }
         return set;
+    }
+
+    public static int getNumPlayers(){
+        return numPlayers;
     }
 
     //called once at the end of a day
@@ -419,6 +509,7 @@ public class Board {
 
         //**********GAME INITIALIZATION**********//
         //read in cards and rooms
+
         sceneCards = Reader.readCards();
 
         Reader.readRooms();
@@ -427,9 +518,6 @@ public class Board {
         sets = Reader.getSets();
 
         drawSceneCards();
-
-
-
 
 
 
@@ -490,7 +578,7 @@ public class Board {
         }
         //get a reference to the trailer room
         Room trailer = getRoom("trailer");
-        //set every players location to the trialer and start them out with the
+        //set every players location to the trailer and start them out with the
         // appropriate money/credits for the number of players in the game
         for(int i = 0; i < numPlayers; i++){
             Player current = players.remove();
@@ -515,7 +603,7 @@ public class Board {
     //Determines if there was a tie
     public static void endGame() {
 
-        //initialize varibales for each players final score, winner score, and the names of the winner(s)
+        //initialize variables for each players final score, winner score, and the names of the winner(s)
         int winnerScore = 0;
         String[] winnerNames = new String[8];
         int finalScore = 0;
@@ -609,6 +697,7 @@ public class Board {
             Player player = new Player("Player " + i);
             Room trailer = getRoom("trailer");
 
+
             System.out.println(player.getName());
 
             player.updateRoom(trailer);
@@ -620,6 +709,14 @@ public class Board {
         for(int i = 0; i < numPlayers; i++){
             Player player = players.remove();
             player.setColor(colors[i]);
+
+            if(playFlag == 1){
+                player.updateCredits(2);
+            }else if(playFlag == 2){
+                player.updateCredits(4);
+            }else if(playFlag == 3){
+                player.updateRank(2);
+            }
 
         }
     }
@@ -635,6 +732,35 @@ public class Board {
 
     public ArrayList<Set> getSets(){
         return this.sets;
+    }
+
+    public static Player getCurPlayer() {
+        return curPlayer;
+    }
+
+    public static void setCommand(String nCommand) {
+        command = nCommand;
+    }
+
+    public static void setChoice(String nChoice) {
+        choice = nChoice;
+        choiceMade = true;
+    }
+
+    public static void setChoiceMade(boolean c) {
+        choiceMade = c;
+    }
+
+    public static String getChoice() {
+        return choice;
+    }
+
+    public static String getCommand() {
+        return command;
+    }
+
+    public static PlayerQueue getPlayers(){
+        return players;
     }
 
 
